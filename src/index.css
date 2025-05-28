@@ -1,0 +1,69 @@
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+
+#root {
+  width: 100%;
+  height: 100vh;
+  overflow-x: hidden;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+/* Fix for responsive layout and overlapping issues */
+.ant-layout {
+  min-height: 100vh;
+}
+
+.ant-layout-content {
+  overflow-x: hidden;
+  padding: 16px;
+}
+
+/* Mobile responsive fixes */
+@media (max-width: 768px) {
+  .ant-layout-content {
+    padding: 8px;
+  }
+  
+  .ant-card {
+    margin-bottom: 16px;
+  }
+  
+  .ant-table-wrapper {
+    overflow-x: auto;
+  }
+  
+  .ant-statistic {
+    text-align: center;
+  }
+}
+
+/* Fix for dark theme cards */
+.ant-card {
+  background: #1f1f1f !important;
+  border: 1px solid #303030 !important;
+}
+
+.ant-card-head {
+  background: #1f1f1f !important;
+  border-bottom: 1px solid #303030 !important;
+  color: #fff !important;
+}
+
+.ant-card-head-title {
+  color: #fff !important;
+}

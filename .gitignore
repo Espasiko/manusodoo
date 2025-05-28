@@ -1,0 +1,96 @@
+# Dependencias
+node_modules/
+venv/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Archivos de entorno
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Build outputs
+dist/
+build/
+.next/
+out/
+
+# Archivos temporales
+.tmp/
+.cache/
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Backups
+backups/
+*.sql
+*.dump
+
+# Docker volumes data (no subir datos de contenedores)
+# Solo mantener la configuración
+
+# Archivos de base de datos locales
+*.db
+*.sqlite
+*.sqlite3
+project.db
+
+# Archivos de cookies y sesiones
+cookies.txt
+sessions/
+
+# Archivos de configuración sensibles
+config/odoo.conf
+# Mantener solo el ejemplo
+
+# Archivos de Windows
+*.exe
+*.msi
+*.zip:Zone.Identifier
+*.xlsx:Zone.Identifier
+*.csv:Zone.Identifier
+*.xls:Zone.Identifier
+*.dat:Zone.Identifier
+
+# Archivos grandes de plantillas (mantener solo ejemplos pequeños)
+# plantillasodoo/*.xlsx
+# plantillasodoo/*.csv
+# plantillasodoo/*.xls
+
+# Certificados y claves privadas
+*.pem
+*.key
+*.crt
+*.p12
+
+# Archivos de configuración local
+mcp-config.json.back
+
+# Archivos temporales de desarrollo
+pasted_content.txt
+
+# Archivos de sistema
+.pytest_cache/
+.coverage
+.nyc_output
+
+# Archivos de documentación temporal
+*.tmp.md
