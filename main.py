@@ -364,14 +364,126 @@ async def get_session(current_user: User = Depends(get_current_active_user)):
 
 @app.get("/api/v1/products", response_model=List[Product])
 async def get_products(current_user: User = Depends(get_current_active_user)):
-    return products
+    try:
+        # Conexión con Odoo usando XML-RPC
+        import xmlrpc.client
+        
+        # Configuración de conexión a Odoo
+        url = "http://localhost:8069"
+        db = "pelotazo"
+        username = "admin"
+        password = "admin"
+        
+        # Autenticación
+        common = xmlrpc.client.ServerProxy(f'{url}/xmlrpc/2/common')
+        uid = common.authenticate(db, username, password, {})
+        
+        if not uid:
+            return products  # Fallback a datos simulados si falla la autenticación
+        
+        # Conexión al modelo de productos
+        models = xmlrpc.client.ServerProxy(f'{url}/xmlrpc/2/object')
+        
+        # Buscar productos en Odoo
+        product_ids = models.execute_kw(db, uid, password, 'product.template', 'search', [[]])
+        
+        if not product_ids:
+            return products  # Fallback a datos simulados si no hay productos
+        
+        # Obtener datos de productos
+        odoo_products = models.execute_kw(db, uid, password, 'product.template', 'read', [product_ids], 
+                                        {'fields': ['id', 'name', 'default_code', 'categ_id', 'list_price', 'qty_available']})
+        
+        # Transformar a formato esperado por el frontend
+        transformed_products = []
+        for p in odoo_products:
+            category_name = "Sin categoría"
+            if p.get('categ_id'):
+                # Obtener nombre de categoría
+                category = models.execute_kw(db, uid, password, 'product.category', 'read', [p['categ_id'][0]], {'fields': ['name']})
+                if category:
+                    category_name = category[0]['name']
+            
+            transformed_products.append({
+                "id": p['id'],
+                "name": p['name'],
+                "code": p.get('default_code', '') or f"PROD-{p['id']}",
+                "category": category_name,
+                "price": p.get('list_price', 0.0),
+                "stock": int(p.get('qty_available', 0)),
+                "image_url": f"https://example.com/images/product_{p['id']}.jpg"
+            })
+        
+        return transformed_products
+    except Exception as e:
+        print(f"Error al conectar con Odoo: {e}")
+        return products  # Fallback a datos simulados si hay error
 
 @app.get("/api/v1/products/{product_id}", response_model=Product)
 async def get_product(product_id: int, current_user: User = Depends(get_current_active_user)):
-    for product in products:
-        if product["id"] == product_id:
-            return product
-    raise HTTPException(status_code=404, detail="Product not found")
+    try:
+        # Conexión con Odoo usando XML-RPC
+        import xmlrpc.client
+        
+        # Configuración de conexión a Odoo
+        url = "http://localhost:8069"
+        db = "pelotazo"
+        username = "admin"
+        password = "admin"
+        
+        # Autenticación
+        common = xmlrpc.client.ServerProxy(f'{url}/xmlrpc/2/common')
+        uid = common.authenticate(db, username, password, {})
+        
+        if not uid:
+            # Fallback a datos simulados si falla la autenticación
+            for product in products:
+                if product["id"] == product_id:
+                    return product
+            raise HTTPException(status_code=404, detail="Product not found")
+        
+        # Conexión al modelo de productos
+        models = xmlrpc.client.ServerProxy(f'{url}/xmlrpc/2/object')
+        
+        # Buscar producto específico en Odoo
+        odoo_product = models.execute_kw(db, uid, password, 'product.template', 'read', [[product_id]], 
+                                      {'fields': ['id', 'name', 'default_code', 'categ_id', 'list_price', 'qty_available']})
+        
+        if not odoo_product:
+            # Fallback a datos simulados si no se encuentra el producto
+            for product in products:
+                if product["id"] == product_id:
+                    return product
+            raise HTTPException(status_code=404, detail="Product not found")
+        
+        p = odoo_product[0]
+        
+        # Obtener categoría
+        category_name = "Sin categoría"
+        if p.get('categ_id'):
+            category = models.execute_kw(db, uid, password, 'product.category', 'read', [p['categ_id'][0]], {'fields': ['name']})
+            if category:
+                category_name = category[0]['name']
+        
+        # Transformar a formato esperado por el frontend
+        transformed_product = {
+            "id": p['id'],
+            "name": p['name'],
+            "code": p.get('default_code', '') or f"PROD-{p['id']}",
+            "category": category_name,
+            "price": p.get('list_price', 0.0),
+            "stock": int(p.get('qty_available', 0)),
+            "image_url": f"https://example.com/images/product_{p['id']}.jpg"
+        }
+        
+        return transformed_product
+    except Exception as e:
+        print(f"Error al conectar con Odoo para obtener producto {product_id}: {e}")
+        # Fallback a datos simulados si hay error
+        for product in products:
+            if product["id"] == product_id:
+                return product
+        raise HTTPException(status_code=404, detail="Product not found")
 
 @app.get("/api/v1/inventory", response_model=List[InventoryItem])
 async def get_inventory(current_user: User = Depends(get_current_active_user)):
@@ -387,18 +499,97 @@ async def get_customers(current_user: User = Depends(get_current_active_user)):
 
 @app.get("/api/v1/dashboard/stats", response_model=Dict[str, Any])
 async def get_dashboard_stats(current_user: User = Depends(get_current_active_user)):
-    return {
-        "totalProducts": len(products),
-        "lowStock": sum(1 for p in products if p["stock"] < 10),
-        "salesThisMonth": sum(s["total"] for s in sales),
-        "activeCustomers": sum(1 for c in customers if c["status"] == "Activo"),
-        "topCategories": [
-            {"name": "Refrigeradores", "percentage": 28},
-            {"name": "Lavadoras", "percentage": 22},
-            {"name": "Televisores", "percentage": 18},
-            {"name": "Hornos", "percentage": 12},
-        ]
-    }
+    try:
+        # Conexión con Odoo usando XML-RPC
+        import xmlrpc.client
+        from collections import Counter
+        
+        # Configuración de conexión a Odoo
+        url = "http://localhost:8069"
+        db = "pelotazo"
+        username = "admin"
+        password = "admin"
+        
+        # Autenticación
+        common = xmlrpc.client.ServerProxy(f'{url}/xmlrpc/2/common')
+        uid = common.authenticate(db, username, password, {})
+        
+        if not uid:
+            # Fallback a datos simulados si falla la autenticación
+            return {
+                "totalProducts": len(products),
+                "lowStock": sum(1 for p in products if p["stock"] < 10),
+                "salesThisMonth": sum(s["total"] for s in sales),
+                "activeCustomers": sum(1 for c in customers if c["status"] == "Activo"),
+                "topCategories": [
+                    {"name": "Refrigeradores", "percentage": 28},
+                    {"name": "Lavadoras", "percentage": 22},
+                    {"name": "Televisores", "percentage": 18},
+                    {"name": "Hornos", "percentage": 12},
+                ]
+            }
+        
+        # Conexión al modelo de productos
+        models = xmlrpc.client.ServerProxy(f'{url}/xmlrpc/2/object')
+        
+        # Obtener productos de Odoo
+        product_ids = models.execute_kw(db, uid, password, 'product.template', 'search', [[]])
+        odoo_products = models.execute_kw(db, uid, password, 'product.template', 'read', [product_ids], 
+                                        {'fields': ['id', 'name', 'categ_id', 'qty_available']})
+        
+        # Calcular estadísticas
+        total_products = len(odoo_products)
+        low_stock = sum(1 for p in odoo_products if p.get('qty_available', 0) < 10)
+        
+        # Obtener categorías y calcular porcentajes
+        categories = []
+        category_counts = Counter()
+        
+        for p in odoo_products:
+            if p.get('categ_id'):
+                category = models.execute_kw(db, uid, password, 'product.category', 'read', [p['categ_id'][0]], {'fields': ['name']})
+                if category:
+                    category_counts[category[0]['name']] += 1
+                else:
+                    category_counts['Sin categoría'] += 1
+            else:
+                category_counts['Sin categoría'] += 1
+        
+        # Calcular porcentajes de las top categorías
+        top_categories = []
+        if total_products > 0:
+            for category, count in category_counts.most_common(4):
+                percentage = round((count / total_products) * 100)
+                top_categories.append({"name": category, "percentage": percentage})
+        
+        # Obtener ventas (usando datos simulados por ahora)
+        sales_this_month = sum(s["total"] for s in sales)
+        
+        # Obtener clientes activos (usando datos simulados por ahora)
+        active_customers = sum(1 for c in customers if c["status"] == "Activo")
+        
+        return {
+            "totalProducts": total_products,
+            "lowStock": low_stock,
+            "salesThisMonth": sales_this_month,
+            "activeCustomers": active_customers,
+            "topCategories": top_categories
+        }
+    except Exception as e:
+        print(f"Error al conectar con Odoo para estadísticas: {e}")
+        # Fallback a datos simulados si hay error
+        return {
+            "totalProducts": len(products),
+            "lowStock": sum(1 for p in products if p["stock"] < 10),
+            "salesThisMonth": sum(s["total"] for s in sales),
+            "activeCustomers": sum(1 for c in customers if c["status"] == "Activo"),
+            "topCategories": [
+                {"name": "Refrigeradores", "percentage": 28},
+                {"name": "Lavadoras", "percentage": 22},
+                {"name": "Televisores", "percentage": 18},
+                {"name": "Hornos", "percentage": 12},
+            ]
+        }
 
 @app.get("/")
 async def root():
