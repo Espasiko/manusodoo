@@ -221,7 +221,7 @@ class VerifactuClient:
                 response = await client.post(
                     f"{self.base_url}/facturas",
                     headers=headers,
-                    json=factura.dict()
+                    json=factura.model_dump()
                 )
                 
                 if response.status_code == 201:
