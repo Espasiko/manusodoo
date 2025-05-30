@@ -50,7 +50,7 @@ const Dashboard: React.FC = () => {
   }, []);
 
   return (
-    <div style={{ padding: '20px' }}>
+    <div className="dashboard-container">
       <Title level={3} style={{ marginBottom: '24px', color: '#fff' }}>Dashboard</Title>
       
       {/* Tarjetas de estadísticas */}

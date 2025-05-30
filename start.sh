@@ -109,6 +109,39 @@ if [ -f "package.json" ]; then
     fi
 fi
 
+# Iniciar API FastAPI en segundo plano
+if [ -f "main.py" ]; then
+    print_status "Iniciando API FastAPI en puerto 8000..."
+    if pgrep -f "uvicorn main:app" > /dev/null; then
+        print_warning "La API FastAPI ya está en ejecución"
+    else
+        source venv/bin/activate
+        nohup python3 -m uvicorn main:app --host 0.0.0.0 --port 8000 > uvicorn.log 2>&1 &
+        sleep 3
+        if pgrep -f "uvicorn main:app" > /dev/null; then
+            print_status "✅ API FastAPI iniciada en http://localhost:8000"
+        else
+            print_error "❌ Error al iniciar la API FastAPI. Revise uvicorn.log"
+        fi
+    fi
+fi
+
+# Iniciar frontend en modo desarrollo si se especifica
+if [ "$1" = "--with-frontend" ]; then
+    print_status "Iniciando frontend en puerto 3001..."
+    if pgrep -f "vite.*3001" > /dev/null; then
+        print_warning "El frontend ya está en ejecución"
+    else
+        nohup npm run dev > frontend.log 2>&1 &
+        sleep 5
+        if pgrep -f "vite.*3001" > /dev/null; then
+            print_status "✅ Frontend iniciado en http://localhost:3001"
+        else
+            print_error "❌ Error al iniciar el frontend. Revise frontend.log"
+        fi
+    fi
+fi
+
 # Mostrar estado del sistema
 echo ""
 print_info "=== Estado del Sistema ==="
@@ -120,12 +153,19 @@ echo ""
 echo "📋 Servicios disponibles:"
 echo "   🏢 Odoo ERP: http://localhost:8069"
 echo "   🗄️  PostgreSQL: localhost:5433"
-echo "   📊 Dashboard: Ejecute './dev-dashboard.sh' para iniciar"
+echo "   🔌 API FastAPI: http://localhost:8000"
+if [ "$1" = "--with-frontend" ]; then
+    echo "   🖥️  Frontend: http://localhost:3001"
+else
+    echo "   📊 Dashboard: Ejecute './dev-dashboard.sh' para iniciar"
+fi
 echo ""
 echo "🔧 Comandos útiles:"
-echo "   ./dev-dashboard.sh  - Iniciar dashboard en modo desarrollo"
-echo "   ./stop.sh          - Detener todos los servicios"
-echo "   ./backup.sh        - Crear backup del sistema"
-echo "   docker logs last_odoo_1  - Ver logs de Odoo"
-echo "   docker logs last_db_1    - Ver logs de PostgreSQL"
+echo "   ./start.sh --with-frontend  - Iniciar todo el sistema incluyendo frontend"
+echo "   ./dev-dashboard.sh         - Iniciar dashboard en modo desarrollo"
+echo "   ./stop.sh                  - Detener todos los servicios"
+echo "   ./backup.sh                - Crear backup del sistema"
+echo "   docker logs last_odoo_1    - Ver logs de Odoo"
+echo "   docker logs last_db_1      - Ver logs de PostgreSQL"
+echo "   cat uvicorn.log            - Ver logs de FastAPI"
 echo ""

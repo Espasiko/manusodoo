@@ -31,6 +31,20 @@ code {
 .ant-layout-content {
   overflow-x: hidden;
   padding: 16px;
+  margin-left: 0;
+  transition: margin-left 0.2s;
+}
+
+/* Ensure content doesn't overlap with sidebar */
+.ant-layout-has-sider .ant-layout-content {
+  margin-left: 200px;
+}
+
+/* Responsive sidebar adjustments */
+@media (max-width: 992px) {
+  .ant-layout-has-sider .ant-layout-content {
+    margin-left: 0;
+  }
 }
 
 /* Mobile responsive fixes */
@@ -56,6 +70,7 @@ code {
 .ant-card {
   background: #1f1f1f !important;
   border: 1px solid #303030 !important;
+  margin-bottom: 16px;
 }
 
 .ant-card-head {
@@ -66,4 +81,43 @@ code {
 
 .ant-card-head-title {
   color: #fff !important;
+}
+
+/* Dashboard specific fixes */
+.dashboard-container {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+.dashboard-container .ant-row {
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+  width: 100%;
+}
+
+.dashboard-container .ant-col {
+  padding-left: 8px;
+  padding-right: 8px;
+}
+
+/* Ensure charts and content don't overflow */
+.dashboard-container .ant-card {
+  width: 100%;
+  max-width: 100%;
+  overflow: hidden;
+}
+
+/* Mobile responsive improvements */
+@media (max-width: 768px) {
+  .dashboard-container {
+    padding: 10px;
+  }
+  
+  .dashboard-container .ant-col {
+    padding-left: 4px;
+    padding-right: 4px;
+  }
 }

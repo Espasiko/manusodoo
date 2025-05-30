@@ -4,6 +4,10 @@
 
 ManusOdoo es un sistema completo de gestión empresarial basado en Odoo 18.0 con un dashboard personalizado desarrollado en React. El sistema está diseñado para "El Pelotazo", proporcionando funcionalidades de e-commerce, gestión de inventario, ventas, clientes y reportes.
 
+## 🔄 Sistema de Mapeo de Datos de Proveedores
+
+El sistema incluye un conjunto de herramientas para automatizar el proceso de mapeo y conversión de datos de proveedores (en formatos CSV y Excel) al formato requerido por Odoo, utilizando técnicas de inteligencia artificial para mejorar la calidad de los datos.
+
 ## 🏗️ Arquitectura del Sistema
 
 ### Backend - Odoo 18.0
@@ -48,6 +52,98 @@ Este script:
 - Instala Docker y Docker Compose (si no están instalados)
 - Instala Node.js y npm
 - Configura el entorno
+
+## 🛠️ Sistema de Mapeo de Datos de Proveedores
+
+### Características principales
+
+- **Detección automática de proveedores**: Identifica automáticamente el proveedor basándose en el nombre del archivo y su estructura.
+- **Extracción inteligente de atributos**: Extrae atributos como marca, medidas, capacidad, etc. de los nombres de productos.
+- **Inferencia de categorías**: Sugiere categorías para productos basándose en su nombre y características.
+- **Normalización de nombres**: Estandariza los nombres de productos para mejorar la consistencia.
+- **Detección de duplicados**: Identifica posibles productos duplicados basándose en la similitud de nombres.
+- **Generación de informes**: Crea informes comparativos con estadísticas y métricas de calidad de datos.
+- **Conversión a formato Odoo**: Genera archivos CSV compatibles con la importación de Odoo.
+
+### Estructura del sistema
+
+```
+/manusodoo/last/
+├── menu_principal.py         # Interfaz principal del sistema
+├── convertidor_proveedores.py # Convertidor básico de archivos
+├── ia_mapeo.py               # Funciones de IA para mejorar el mapeo
+├── analizar_proveedor.py     # Analizador de archivos individuales
+├── informe_proveedores.py    # Generador de informes comparativos
+├── procesar_lote.py          # Procesador de lotes de archivos
+├── demo_convertidor.py       # Demostración interactiva
+├── ejemplos/                 # Directorio con archivos de ejemplo
+├── odoo_import/              # Directorio para archivos de salida
+└── informes/                 # Directorio para informes generados
+```
+
+### Uso del Sistema de Mapeo
+
+#### Menú Principal
+
+Ejecute el script `menu_principal.py` para acceder a todas las funcionalidades del sistema:
+
+```bash
+python menu_principal.py
+```
+
+Desde el menú principal puede:
+
+1. **Analizar archivo individual**: Examina un archivo específico y muestra información detallada.
+2. **Procesar lote de archivos**: Convierte múltiples archivos a formato Odoo.
+3. **Generar informe comparativo**: Crea un informe HTML con estadísticas de todos los proveedores.
+4. **Convertir archivo a formato Odoo**: Transforma un archivo específico al formato de importación de Odoo.
+5. **Demostración interactiva**: Muestra el funcionamiento del sistema con ejemplos.
+6. **Configuración**: Permite modificar los directorios de trabajo.
+
+#### Uso individual de scripts
+
+También puede ejecutar cada script de forma independiente:
+
+```bash
+# Analizar un archivo específico
+python analizar_proveedor.py /ruta/al/archivo.xlsx
+
+# Procesar un lote de archivos
+python procesar_lote.py
+
+# Generar informe comparativo
+python informe_proveedores.py
+
+# Convertir un archivo específico
+python convertidor_proveedores.py /ruta/al/archivo.xlsx -o /directorio/salida
+```
+
+### Proveedores soportados
+
+El sistema está configurado para detectar y procesar archivos de los siguientes proveedores:
+
+- BSH
+- CECOTEC
+- ALMCE
+- BECKEN
+- TEGALUXE
+- JOHNSON
+- ELECTRODIRECTO
+- JATA
+- MIELECTRO
+- NEVIR
+- ORBEGOZO
+- UFESA
+- VITROKITCHEN
+
+### Personalización
+
+Para adaptar el sistema a sus necesidades específicas, puede modificar:
+
+- **Patrones de detección**: En `convertidor_proveedores.py` para reconocer nuevos proveedores.
+- **Mapeo de columnas**: En `convertidor_proveedores.py` para ajustar la correspondencia entre columnas.
+- **Patrones de productos**: En `ia_mapeo.py` para mejorar la extracción de atributos.
+- **Categorías**: En `ia_mapeo.py` para actualizar las categorías y palabras clave.
 - Construye e inicia los contenedores
 - Instala dependencias del dashboard
 
