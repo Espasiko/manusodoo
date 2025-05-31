@@ -353,7 +353,139 @@ manusodoo/
 - **Componentes modulares**: Fácil mantenimiento
 - **Configuración flexible**: Adaptable a diferentes entornos
 
+## 🛒 Tienda Online "El Pelotazo" - E-commerce Moderno
+
+### Visión del Proyecto E-commerce
+**"El Pelotazo"** tendrá una tienda online moderna desarrollada con Node.js, alejándose de las plantillas obsoletas de Odoo para ofrecer una experiencia de usuario excepcional.
+
+#### Identidad Visual
+- **Colores corporativos**: Rojo (#DC2626), Blanco (#FFFFFF), Negro (#1F2937)
+- **Diseño moderno**: UX/UI optimizada para conversión
+- **Responsive**: Adaptable a todos los dispositivos
+- **SEO optimizado**: Estructura técnica para posicionamiento
+
+#### Arquitectura E-commerce
+```
+┌─────────────────────────────────────┐
+│        Frontend (Next.js)          │
+│  - Catálogo dinámico               │
+│  - Carrito inteligente              │
+│  - Checkout con pago fraccionado    │
+│  - Portal del cliente              │
+└─────────────────────────────────────┘
+           │
+           ▼
+┌─────────────────────────────────────┐
+│     API Middleware (FastAPI)        │
+│  - Sincronización en tiempo real    │
+│  - Gestión de pagos                 │
+│  - Cache de productos               │
+│  - Transformación de datos          │
+└─────────────────────────────────────┘
+           │
+           ▼
+┌─────────────────────────────────────┐
+│        Odoo Backend                 │
+│  - Gestión de productos             │
+│  - Control de inventario            │
+│  - Procesamiento de pedidos         │
+│  - CRM y clientes                   │
+└─────────────────────────────────────┘
+```
+
+### Funcionalidades E-commerce Avanzadas
+
+#### Sistema de Pagos Fraccionados
+- **Pago inicial**: 30% del precio total
+- **Pago final**: 70% restante en instalación
+- **Productos elegibles**: Frigoríficos, lavadoras, campanas, etc.
+- **Gestión automática**: Integración con Odoo para seguimiento
+
+#### Catálogo Dinámico
+- **Sincronización en tiempo real**: Cambios desde Odoo reflejados instantáneamente
+- **Control de visibilidad**: No todos los productos se muestran online
+- **Gestión de ofertas**: Activación/desactivación desde panel admin
+- **Filtros avanzados**: Marca, precio, características, disponibilidad
+
+#### Experiencia de Usuario
+- **Configurador de productos**: Personalización de electrodomésticos
+- **Calculadora de instalación**: Verificación de compatibilidad
+- **Recomendaciones inteligentes**: Productos relacionados
+- **Portal del cliente**: Seguimiento de pedidos e instalaciones
+
+### Categorías de Productos Expandidas
+
+#### Electrodomésticos (Existente)
+- Grandes Electrodomésticos
+  - Frigoríficos
+  - Lavadoras
+  - Lavavajillas
+  - Secadoras
+  - Campanas
+- Pequeños Electrodomésticos
+  - Microondas
+  - Cafeteras
+  - Planchas
+  - Aspiradoras
+
+#### **NUEVO: Hogar** 🏠
+- **Colchones** (Próxima implementación)
+  - Colchones de muelles
+  - Colchones de látex
+  - Colchones viscoelásticos
+  - Bases y somieres
+  - Almohadas y accesorios
+
+### Funcionalidades Avanzadas de Odoo Implementadas
+
+#### E-commerce Avanzado
+- **Gestión de inventario en tiempo real**: Sincronización tienda física/online
+- **Configurador de productos**: Variantes de electrodomésticos
+- **Gestión de promociones**: Descuentos automáticos y ofertas temporales
+- **Múltiples métodos de pago**: Integración con pasarelas y pagos fraccionados
+- **Gestión de envíos**: Cálculo automático y seguimiento
+
+#### CRM y Marketing Avanzado
+- **Segmentación de clientes**: Análisis de comportamiento
+- **Email marketing automatizado**: Campañas personalizadas
+- **Programa de fidelización**: Sistema de puntos y descuentos
+- **Analytics avanzados**: ROI, productos más vendidos, tendencias
+
+#### Gestión de Servicios
+- **Planificación de instalaciones**: Calendario de técnicos optimizado
+- **Gestión de garantías**: Seguimiento automático
+- **Portal del cliente**: Acceso a historial y estado de instalaciones
+- **Gestión de reclamaciones**: Workflow automatizado
+
+### Optimización SEO y Performance
+
+#### Estructura Técnica
+- **Next.js SSR/SSG**: Renderizado del lado del servidor
+- **URLs amigables**: Estructura semántica para SEO
+- **Meta tags dinámicos**: Generados desde datos de Odoo
+- **Schema markup**: Productos, reseñas, organización
+- **Core Web Vitals**: Optimización de rendimiento
+
+#### Contenido Optimizado
+- **Descripciones únicas**: Para cada producto
+- **Blog integrado**: Guías de compra y consejos
+- **FAQ dinámicas**: Basadas en consultas frecuentes
+- **Comparador de productos**: Funcionalidad SEO-friendly
+
 ## 🔮 Próximos Pasos
+
+### Desarrollo E-commerce (Prioridad Alta)
+1. **Tienda Online "El Pelotazo"**
+   - Desarrollo frontend con Next.js
+   - Integración con FastAPI middleware
+   - Sistema de pagos fraccionados
+   - Panel de administración dinámico
+
+2. **Expansión de Categorías**
+   - Implementación categoría Hogar
+   - Subcategoría Colchones
+   - Configurador de productos para colchones
+   - Gestión de medidas y características
 
 ### Funcionalidades Pendientes
 1. **Módulos Personalizados Odoo**
