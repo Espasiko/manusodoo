@@ -11,6 +11,16 @@ export interface Customer {
   status: string;
 }
 
+export interface Provider {
+  id: number;
+  name: string;
+  tax_calculation_method: string;
+  discount_type: string;
+  payment_term: string;
+  incentive_rules?: string;
+  status: string;
+}
+
 export interface Product {
   id: number;
   name: string;
@@ -18,6 +28,7 @@ export interface Product {
   category: string;
   price: number;
   stock: number;
+  image_url: string;
 }
 
 export interface Sale {
@@ -132,6 +143,90 @@ class OdooService {
     } catch (error) {
       console.error('Error obteniendo clientes:', error);
       return [];
+    }
+  }
+
+  async getProviders(limit: number = 10): Promise<Provider[]> {
+    try {
+      const response = await axios.get(`${this.apiUrl}/api/v1/providers`, {
+        headers: this.getAuthHeaders(),
+      });
+      return response.data;
+    } catch (error) {
+      console.error('Error obteniendo proveedores:', error);
+      return [];
+    }
+  }
+
+  async createProvider(provider: Omit<Provider, 'id'>): Promise<Provider | null> {
+    try {
+      const response = await axios.post(`${this.apiUrl}/api/v1/providers`, provider, {
+        headers: this.getAuthHeaders(),
+      });
+      return response.data;
+    } catch (error) {
+      console.error('Error creando proveedor:', error);
+      return null;
+    }
+  }
+
+  async updateProvider(id: number, provider: Partial<Provider>): Promise<Provider | null> {
+    try {
+      const response = await axios.put(`${this.apiUrl}/api/v1/providers/${id}`, provider, {
+        headers: this.getAuthHeaders(),
+      });
+      return response.data;
+    } catch (error) {
+      console.error('Error actualizando proveedor:', error);
+      return null;
+    }
+  }
+
+  async deleteProvider(id: number): Promise<boolean> {
+    try {
+      await axios.delete(`${this.apiUrl}/api/v1/providers/${id}`, {
+        headers: this.getAuthHeaders(),
+      });
+      return true;
+    } catch (error) {
+      console.error('Error eliminando proveedor:', error);
+      return false;
+    }
+  }
+
+  async createProduct(product: Omit<Product, 'id'>): Promise<Product | null> {
+    try {
+      const response = await axios.post(`${this.apiUrl}/api/v1/products`, product, {
+        headers: this.getAuthHeaders(),
+      });
+      return response.data;
+    } catch (error) {
+      console.error('Error creando producto:', error);
+      return null;
+    }
+  }
+
+  async updateProduct(id: number, product: Partial<Product>): Promise<Product | null> {
+    try {
+      const response = await axios.put(`${this.apiUrl}/api/v1/products/${id}`, product, {
+        headers: this.getAuthHeaders(),
+      });
+      return response.data;
+    } catch (error) {
+      console.error('Error actualizando producto:', error);
+      return null;
+    }
+  }
+
+  async deleteProduct(id: number): Promise<boolean> {
+    try {
+      await axios.delete(`${this.apiUrl}/api/v1/products/${id}`, {
+        headers: this.getAuthHeaders(),
+      });
+      return true;
+    } catch (error) {
+      console.error('Error eliminando producto:', error);
+      return false;
     }
   }
 

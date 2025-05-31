@@ -84,6 +84,15 @@ class Customer(BaseModel):
     country: str
     status: str
 
+class Provider(BaseModel):
+    id: int
+    name: str
+    tax_calculation_method: str
+    discount_type: str
+    payment_term: str
+    incentive_rules: Optional[str] = None
+    status: str = "active"
+
 # Base de datos simulada (en memoria)
 fake_users_db = {
     "admin": {
@@ -141,6 +150,15 @@ products = [
         "price": 199.99,
         "stock": 20,
         "image_url": "https://example.com/images/microondas.jpg"
+    },
+    {
+        "id": 6,
+        "name": "Campana Extractora Teka DM 90",
+        "code": "CAM-TEK-006",
+        "category": "Campanas",
+        "price": 299.99,
+        "stock": 7,
+        "image_url": "https://example.com/images/campana.jpg"
     }
 ]
 
@@ -280,6 +298,45 @@ customers = [
         "city": "Bilbao",
         "country": "España",
         "status": "Activo"
+    }
+]
+
+providers = [
+    {
+        "id": 1,
+        "name": "CECOTEC",
+        "tax_calculation_method": "included",
+        "discount_type": "percentage",
+        "payment_term": "30_days",
+        "incentive_rules": "Descuento por volumen: 5% para pedidos > 10000€",
+        "status": "active"
+    },
+    {
+        "id": 2,
+        "name": "BSH Electrodomésticos",
+        "tax_calculation_method": "excluded",
+        "discount_type": "fixed",
+        "payment_term": "60_days",
+        "incentive_rules": "Descuento fijo de 100€ por pedido > 5000€",
+        "status": "active"
+    },
+    {
+        "id": 3,
+        "name": "BECKEN",
+        "tax_calculation_method": "included",
+        "discount_type": "percentage",
+        "payment_term": "45_days",
+        "incentive_rules": "3% descuento en productos de temporada",
+        "status": "active"
+    },
+    {
+        "id": 4,
+        "name": "ALMCE Distribución",
+        "tax_calculation_method": "excluded",
+        "discount_type": "none",
+        "payment_term": "15_days",
+        "incentive_rules": "Sin incentivos especiales",
+        "status": "inactive"
     }
 ]
 
@@ -496,6 +553,103 @@ async def get_sales(current_user: User = Depends(get_current_active_user)):
 @app.get("/api/v1/customers", response_model=List[Customer])
 async def get_customers(current_user: User = Depends(get_current_active_user)):
     return customers
+
+# Rutas para Proveedores
+@app.get("/api/v1/providers", response_model=List[Provider])
+async def get_providers(current_user: User = Depends(get_current_active_user)):
+    return providers
+
+@app.get("/api/v1/providers/{provider_id}", response_model=Provider)
+async def get_provider(provider_id: int, current_user: User = Depends(get_current_active_user)):
+    for provider in providers:
+        if provider["id"] == provider_id:
+            return provider
+    raise HTTPException(status_code=404, detail="Provider not found")
+
+@app.post("/api/v1/providers", response_model=Provider)
+async def create_provider(provider_data: dict, current_user: User = Depends(get_current_active_user)):
+    # Generar nuevo ID
+    new_id = max([p["id"] for p in providers], default=0) + 1
+    
+    new_provider = {
+        "id": new_id,
+        "name": provider_data.get("name", ""),
+        "tax_calculation_method": provider_data.get("tax_calculation_method", "excluded"),
+        "discount_type": provider_data.get("discount_type", "none"),
+        "payment_term": provider_data.get("payment_term", "30_days"),
+        "incentive_rules": provider_data.get("incentive_rules", ""),
+        "status": provider_data.get("status", "active")
+    }
+    
+    providers.append(new_provider)
+    return new_provider
+
+@app.put("/api/v1/providers/{provider_id}", response_model=Provider)
+async def update_provider(provider_id: int, provider_data: dict, current_user: User = Depends(get_current_active_user)):
+    for i, provider in enumerate(providers):
+        if provider["id"] == provider_id:
+            # Actualizar campos
+            providers[i].update({
+                "name": provider_data.get("name", provider["name"]),
+                "tax_calculation_method": provider_data.get("tax_calculation_method", provider["tax_calculation_method"]),
+                "discount_type": provider_data.get("discount_type", provider["discount_type"]),
+                "payment_term": provider_data.get("payment_term", provider["payment_term"]),
+                "incentive_rules": provider_data.get("incentive_rules", provider["incentive_rules"]),
+                "status": provider_data.get("status", provider["status"])
+            })
+            return providers[i]
+    raise HTTPException(status_code=404, detail="Provider not found")
+
+@app.delete("/api/v1/providers/{provider_id}")
+async def delete_provider(provider_id: int, current_user: User = Depends(get_current_active_user)):
+    for i, provider in enumerate(providers):
+        if provider["id"] == provider_id:
+            providers.pop(i)
+            return {"message": "Provider deleted successfully"}
+    raise HTTPException(status_code=404, detail="Provider not found")
+
+# Rutas CRUD para Productos
+@app.post("/api/v1/products", response_model=Product)
+async def create_product(product_data: dict, current_user: User = Depends(get_current_active_user)):
+    # Generar nuevo ID
+    new_id = max([p["id"] for p in products], default=0) + 1
+    
+    new_product = {
+        "id": new_id,
+        "name": product_data.get("name", ""),
+        "code": product_data.get("code", f"PROD-{new_id}"),
+        "category": product_data.get("category", "Sin categoría"),
+        "price": product_data.get("price", 0.0),
+        "stock": product_data.get("stock", 0),
+        "image_url": product_data.get("image_url", f"https://example.com/images/product_{new_id}.jpg")
+    }
+    
+    products.append(new_product)
+    return new_product
+
+@app.put("/api/v1/products/{product_id}", response_model=Product)
+async def update_product(product_id: int, product_data: dict, current_user: User = Depends(get_current_active_user)):
+    for i, product in enumerate(products):
+        if product["id"] == product_id:
+            # Actualizar campos
+            products[i].update({
+                "name": product_data.get("name", product["name"]),
+                "code": product_data.get("code", product["code"]),
+                "category": product_data.get("category", product["category"]),
+                "price": product_data.get("price", product["price"]),
+                "stock": product_data.get("stock", product["stock"]),
+                "image_url": product_data.get("image_url", product["image_url"])
+            })
+            return products[i]
+    raise HTTPException(status_code=404, detail="Product not found")
+
+@app.delete("/api/v1/products/{product_id}")
+async def delete_product(product_id: int, current_user: User = Depends(get_current_active_user)):
+    for i, product in enumerate(products):
+        if product["id"] == product_id:
+            products.pop(i)
+            return {"message": "Product deleted successfully"}
+    raise HTTPException(status_code=404, detail="Product not found")
 
 @app.get("/api/v1/dashboard/stats", response_model=Dict[str, Any])
 async def get_dashboard_stats(current_user: User = Depends(get_current_active_user)):

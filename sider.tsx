@@ -8,6 +8,7 @@ import {
   UserOutlined,
   BarChartOutlined,
   SettingOutlined,
+  TeamOutlined,
 } from '@ant-design/icons';
 import { useMenu } from '@refinedev/core';
 import { Link } from 'react-router-dom';
@@ -71,6 +72,11 @@ const Sider: React.FC = () => {
             key: 'reports',
             icon: <BarChartOutlined />,
             label: <Link to="/reports">Informes</Link>,
+          },
+          {
+            key: 'providers',
+            icon: <TeamOutlined />,
+            label: <Link to="/providers">Proveedores</Link>,
           },
           {
             key: 'settings',

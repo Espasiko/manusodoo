@@ -1,83 +1,166 @@
 import React, { useState, useEffect } from 'react';
-import { Table, Card, Typography, Space, Button, Tag } from 'antd';
-import { EditOutlined, DeleteOutlined, PlusOutlined } from '@ant-design/icons';
-import { odooService, Product } from './odooService';
+import { Table, Card, Button, Tag, Space, Modal, Form, Input, InputNumber, Select, message } from 'antd';
+import { PlusOutlined, EditOutlined, DeleteOutlined, ExclamationCircleOutlined } from '@ant-design/icons';
+import { odooService } from './odooService';
 
-const { Title } = Typography;
+interface Product {
+  id: number;
+  name: string;
+  code: string;
+  category: string;
+  price: number;
+  stock: number;
+  image_url: string;
+}
 
 const Products: React.FC = () => {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [editingProduct, setEditingProduct] = useState<Product | null>(null);
+  const [form] = Form.useForm();
 
   useEffect(() => {
-    const fetchProducts = async () => {
-      try {
-        // Try to login first with default credentials
-        const loginSuccess = await odooService.login('admin', 'admin_password_secure');
-        if (loginSuccess) {
-          const productsData = await odooService.getProducts();
-          setProducts(productsData);
-        } else {
-          throw new Error('Authentication failed');
-        }
-      } catch (error) {
-        console.error('Error fetching products:', error);
-        // Fallback to default data if API fails
-        setProducts([
-          {
-            id: 1,
-            name: 'Refrigerador Samsung RT38K5982BS',
-            code: 'REF-SAM-001',
-            category: 'Refrigeradores',
-            price: 899.99,
-            stock: 12,
-          },
-          {
-            id: 2,
-            name: 'Lavadora LG F4WV5012S0W',
-            code: 'LAV-LG-002',
-            category: 'Lavadoras',
-            price: 649.99,
-            stock: 8,
-          },
-          {
-            id: 3,
-            name: 'Televisor Sony KD-55X80J',
-            code: 'TV-SONY-003',
-            category: 'Televisores',
-            price: 799.99,
-            stock: 5,
-          },
-          {
-            id: 4,
-            name: 'Horno Balay 3HB4331X0',
-            code: 'HOR-BAL-004',
-            category: 'Hornos',
-            price: 349.99,
-            stock: 15,
-          },
-          {
-            id: 5,
-            name: 'Microondas Bosch BFL523MS0',
-            code: 'MIC-BOS-005',
-            category: 'Microondas',
-            price: 199.99,
-            stock: 20,
-          },
-        ]);
-      } finally {
-        setLoading(false);
-      }
-    };
-
     fetchProducts();
   }, []);
 
+  const fetchProducts = async () => {
+    setLoading(true);
+    try {
+      const data = await odooService.getProducts();
+      setProducts(data);
+    } catch (error) {
+      console.error('Error fetching products:', error);
+      // Fallback data
+      setProducts([
+        {
+          id: 1,
+          name: "Refrigerador Samsung",
+          code: "REF-001",
+          category: "Electrodomésticos",
+          price: 899.99,
+          stock: 15,
+          image_url: "https://example.com/images/refrigerator.jpg"
+        },
+        {
+          id: 2,
+          name: "Lavadora LG",
+          code: "LAV-002",
+          category: "Electrodomésticos",
+          price: 649.99,
+          stock: 8,
+          image_url: "https://example.com/images/washing-machine.jpg"
+        },
+        {
+          id: 3,
+          name: "Microondas Panasonic",
+          code: "MIC-003",
+          category: "Electrodomésticos",
+          price: 199.99,
+          stock: 25,
+          image_url: "https://example.com/images/microwave.jpg"
+        },
+        {
+          id: 4,
+          name: "Aspiradora Dyson",
+          code: "ASP-004",
+          category: "Limpieza",
+          price: 399.99,
+          stock: 3,
+          image_url: "https://example.com/images/vacuum.jpg"
+        },
+        {
+          id: 5,
+          name: "Televisor Sony 55\"",
+          code: "TV-005",
+          category: "Electrónicos",
+          price: 1299.99,
+          stock: 12,
+          image_url: "https://example.com/images/tv.jpg"
+        }
+      ]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const showModal = (product?: Product) => {
+    setEditingProduct(product || null);
+    setIsModalVisible(true);
+    if (product) {
+      form.setFieldsValue(product);
+    } else {
+      form.resetFields();
+    }
+  };
+
+  const handleCancel = () => {
+    setIsModalVisible(false);
+    setEditingProduct(null);
+    form.resetFields();
+  };
+
+  const handleSubmit = async (values: any) => {
+    try {
+      if (editingProduct) {
+        // Actualizar producto existente
+        const updatedProduct = await odooService.updateProduct(editingProduct.id, values);
+        if (updatedProduct) {
+          setProducts(products.map(p => p.id === editingProduct.id ? updatedProduct : p));
+          message.success('Producto actualizado exitosamente');
+        } else {
+          message.error('Error al actualizar el producto');
+        }
+      } else {
+        // Crear nuevo producto
+        const newProduct = await odooService.createProduct(values);
+        if (newProduct) {
+          setProducts([...products, newProduct]);
+          message.success('Producto creado exitosamente');
+        } else {
+          message.error('Error al crear el producto');
+        }
+      }
+      setIsModalVisible(false);
+      setEditingProduct(null);
+      form.resetFields();
+    } catch (error) {
+      console.error('Error submitting product:', error);
+      message.error('Error al procesar el producto');
+    }
+  };
+
+  const handleDelete = (product: Product) => {
+    Modal.confirm({
+      title: '¿Estás seguro de que quieres eliminar este producto?',
+      icon: <ExclamationCircleOutlined />,
+      content: `Se eliminará el producto: ${product.name}`,
+      okText: 'Sí, eliminar',
+      okType: 'danger',
+      cancelText: 'Cancelar',
+      onOk: async () => {
+        try {
+          const success = await odooService.deleteProduct(product.id);
+          if (success) {
+            setProducts(products.filter(p => p.id !== product.id));
+            message.success('Producto eliminado exitosamente');
+          } else {
+            message.error('Error al eliminar el producto');
+          }
+        } catch (error) {
+          console.error('Error deleting product:', error);
+          message.error('Error al eliminar el producto');
+        }
+      },
+    });
+  };
+
   const columns = [
     {
-      title: 'Código',
-      dataIndex: 'code',
-      key: 'code',
+      title: 'ID',
+      dataIndex: 'id',
+      key: 'id',
+      width: 80,
     },
     {
       title: 'Nombre',
@@ -85,16 +168,20 @@ const Products: React.FC = () => {
       key: 'name',
     },
     {
+      title: 'Código',
+      dataIndex: 'code',
+      key: 'code',
+    },
+    {
       title: 'Categoría',
       dataIndex: 'category',
       key: 'category',
-      render: (text: string) => <Tag color="blue">{text}</Tag>,
     },
     {
       title: 'Precio',
       dataIndex: 'price',
       key: 'price',
-      render: (price: number) => `${price.toFixed(2)} €`,
+      render: (price: number) => `€${price.toFixed(2)}`,
     },
     {
       title: 'Stock',
@@ -107,39 +194,157 @@ const Products: React.FC = () => {
         } else if (stock < 10) {
           color = 'orange';
         }
-        return <Tag color={color}>{stock}</Tag>;
+        return <Tag color={color}>{stock} unidades</Tag>;
       },
     },
     {
       title: 'Acciones',
       key: 'actions',
-      render: (_: any, record: any) => (
+      render: (_: any, record: Product) => (
         <Space size="middle">
-          <Button type="text" icon={<EditOutlined />} />
-          <Button type="text" danger icon={<DeleteOutlined />} />
+          <Button
+            type="primary"
+            icon={<EditOutlined />}
+            size="small"
+            onClick={() => showModal(record)}
+          >
+            Editar
+          </Button>
+          <Button
+            type="primary"
+            danger
+            icon={<DeleteOutlined />}
+            size="small"
+            onClick={() => handleDelete(record)}
+          >
+            Eliminar
+          </Button>
         </Space>
       ),
     },
   ];
 
   return (
-    <div style={{ padding: '20px' }}>
-      <Space style={{ marginBottom: '16px', display: 'flex', justifyContent: 'space-between' }}>
-        <Title level={3} style={{ margin: 0, color: '#fff' }}>Productos</Title>
-        <Button type="primary" icon={<PlusOutlined />}>
+    <div>
+      <div style={{ marginBottom: 16, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <h2>Productos</h2>
+        <Button
+          type="primary"
+          icon={<PlusOutlined />}
+          size="large"
+          onClick={() => showModal()}
+        >
           Añadir Producto
         </Button>
-      </Space>
-      
-      <Card style={{ background: '#1f1f1f', borderRadius: '8px' }}>
-        <Table 
-          columns={columns} 
-          dataSource={products} 
+      </div>
+      <Card>
+        <Table
+          columns={columns}
+          dataSource={products}
           rowKey="id"
-          pagination={{ pageSize: 10 }}
           loading={loading}
+          pagination={{
+            pageSize: 10,
+            showSizeChanger: true,
+            showQuickJumper: true,
+            showTotal: (total, range) => `${range[0]}-${range[1]} de ${total} productos`,
+          }}
         />
       </Card>
+
+      <Modal
+        title={editingProduct ? 'Editar Producto' : 'Crear Nuevo Producto'}
+        open={isModalVisible}
+        onCancel={handleCancel}
+        footer={null}
+        width={600}
+      >
+        <Form
+          form={form}
+          layout="vertical"
+          onFinish={handleSubmit}
+          initialValues={{
+            category: 'Electrodomésticos',
+            price: 0,
+            stock: 0
+          }}
+        >
+          <Form.Item
+            label="Nombre del Producto"
+            name="name"
+            rules={[{ required: true, message: 'Por favor ingresa el nombre del producto' }]}
+          >
+            <Input placeholder="Ej: Refrigerador Samsung" />
+          </Form.Item>
+
+          <Form.Item
+            label="Código del Producto"
+            name="code"
+            rules={[{ required: true, message: 'Por favor ingresa el código del producto' }]}
+          >
+            <Input placeholder="Ej: REF-001" />
+          </Form.Item>
+
+          <Form.Item
+            label="Categoría"
+            name="category"
+            rules={[{ required: true, message: 'Por favor selecciona una categoría' }]}
+          >
+            <Select placeholder="Selecciona una categoría">
+              <Select.Option value="Electrodomésticos">Electrodomésticos</Select.Option>
+              <Select.Option value="Electrónicos">Electrónicos</Select.Option>
+              <Select.Option value="Limpieza">Limpieza</Select.Option>
+              <Select.Option value="Cocina">Cocina</Select.Option>
+              <Select.Option value="Climatización">Climatización</Select.Option>
+              <Select.Option value="Otros">Otros</Select.Option>
+            </Select>
+          </Form.Item>
+
+          <Form.Item
+            label="Precio (€)"
+            name="price"
+            rules={[{ required: true, message: 'Por favor ingresa el precio' }]}
+          >
+            <InputNumber
+              min={0}
+              step={0.01}
+              precision={2}
+              style={{ width: '100%' }}
+              placeholder="0.00"
+            />
+          </Form.Item>
+
+          <Form.Item
+            label="Stock"
+            name="stock"
+            rules={[{ required: true, message: 'Por favor ingresa la cantidad en stock' }]}
+          >
+            <InputNumber
+              min={0}
+              style={{ width: '100%' }}
+              placeholder="0"
+            />
+          </Form.Item>
+
+          <Form.Item
+            label="URL de Imagen"
+            name="image_url"
+          >
+            <Input placeholder="https://example.com/imagen.jpg" />
+          </Form.Item>
+
+          <Form.Item style={{ marginBottom: 0, textAlign: 'right' }}>
+            <Space>
+              <Button onClick={handleCancel}>
+                Cancelar
+              </Button>
+              <Button type="primary" htmlType="submit">
+                {editingProduct ? 'Actualizar' : 'Crear'} Producto
+              </Button>
+            </Space>
+          </Form.Item>
+        </Form>
+      </Modal>
     </div>
   );
 };

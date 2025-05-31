@@ -26,6 +26,7 @@ import Inventory from './inventory';
 import Sales from './sales';
 import Customers from './customers';
 import Reports from './reports';
+import Providers from './providers';
 
 // Importar contexto de Odoo
 import { OdooProvider } from './OdooContext';
@@ -94,6 +95,14 @@ const App: React.FC = () => {
                     icon: "BarChartOutlined",
                   },
                 },
+                {
+                  name: "providers",
+                  list: "/providers",
+                  meta: {
+                    label: "Proveedores",
+                    icon: "TeamOutlined",
+                  },
+                },
               ]}
               options={{
                 syncWithLocation: true,
@@ -117,6 +126,7 @@ const App: React.FC = () => {
                   <Route path="/sales" element={<Sales />} />
                   <Route path="/customers" element={<Customers />} />
                   <Route path="/reports" element={<Reports />} />
+                  <Route path="/providers" element={<Providers />} />
                   <Route path="*" element={<ErrorComponent />} />
                 </Routes>
               </ThemedLayoutV2>
