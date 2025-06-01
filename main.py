@@ -301,44 +301,7 @@ customers = [
     }
 ]
 
-providers = [
-    {
-        "id": 1,
-        "name": "CECOTEC",
-        "tax_calculation_method": "included",
-        "discount_type": "percentage",
-        "payment_term": "30_days",
-        "incentive_rules": "Descuento por volumen: 5% para pedidos > 10000€",
-        "status": "active"
-    },
-    {
-        "id": 2,
-        "name": "BSH Electrodomésticos",
-        "tax_calculation_method": "excluded",
-        "discount_type": "fixed",
-        "payment_term": "60_days",
-        "incentive_rules": "Descuento fijo de 100€ por pedido > 5000€",
-        "status": "active"
-    },
-    {
-        "id": 3,
-        "name": "BECKEN",
-        "tax_calculation_method": "included",
-        "discount_type": "percentage",
-        "payment_term": "45_days",
-        "incentive_rules": "3% descuento en productos de temporada",
-        "status": "active"
-    },
-    {
-        "id": 4,
-        "name": "ALMCE Distribución",
-        "tax_calculation_method": "excluded",
-        "discount_type": "none",
-        "payment_term": "15_days",
-        "incentive_rules": "Sin incentivos especiales",
-        "status": "inactive"
-    }
-]
+providers = [{"id": 1, "name": "MIELECTRO", "tax_calculation_method": "excluded", "discount_type": "percentage", "payment_term": "30_days", "incentive_rules": "Margen por defecto: 30.0%", "status": "active"}, {"id": 2, "name": "BECKEN", "tax_calculation_method": "excluded", "discount_type": "percentage", "payment_term": "30_days", "incentive_rules": "Margen por defecto: 30.0%", "status": "active"}, {"id": 3, "name": "EAS-JOHNSON", "tax_calculation_method": "excluded", "discount_type": "percentage", "payment_term": "30_days", "incentive_rules": "Margen por defecto: 30.0%", "status": "active"}, {"id": 4, "name": "ELECTRODIRECTO", "tax_calculation_method": "excluded", "discount_type": "percentage", "payment_term": "30_days", "incentive_rules": "Margen por defecto: 30.0%", "status": "active"}, {"id": 5, "name": "ORBEGOZO", "tax_calculation_method": "excluded", "discount_type": "percentage", "payment_term": "30_days", "incentive_rules": "Margen por defecto: 30.0%", "status": "active"}, {"id": 6, "name": "UFESA", "tax_calculation_method": "excluded", "discount_type": "percentage", "payment_term": "30_days", "incentive_rules": "Margen por defecto: 30.0%", "status": "active"}, {"id": 7, "name": "VITROKITCHEN", "tax_calculation_method": "excluded", "discount_type": "percentage", "payment_term": "30_days", "incentive_rules": "Margen por defecto: 30.0%", "status": "active"}, {"id": 8, "name": "CECOTEC", "tax_calculation_method": "excluded", "discount_type": "percentage", "payment_term": "30_days", "incentive_rules": "Margen por defecto: 30.0%", "status": "active"}]
 
 # Funciones de autenticación
 def verify_password(plain_password, hashed_password):

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Vista de formulario extendida para product.category -->
+        <record id="product_category_form_view_custom" model="ir.ui.view">
+            <field name="name">product.category.form.custom</field>
+            <field name="model">product.category</field>
+            <field name="inherit_id" ref="product.product_category_form_view"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='parent_id']" position="after">
+                    <field name="x_codigo_categoria"/>
+                    <field name="x_margen_categoria"/>
+                </xpath>
+            </field>
+        </record>
+        
+        <!-- Vista de lista extendida para product.category -->
+        <record id="product_category_list_view_custom" model="ir.ui.view">
+            <field name="name">product.category.list.custom</field>
+            <field name="model">product.category</field>
+            <field name="inherit_id" ref="product.product_category_list_view"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='display_name']" position="after">
+                    <field name="x_codigo_categoria" optional="show"/>
+                    <field name="x_margen_categoria" optional="show"/>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>

@@ -95,6 +95,107 @@ Servicios Docker:
 - **survey**: Encuestas
 - **documents**: Gestión documental
 
+## 💰 Análisis de Proveedores y Estructura de Precios
+
+### Proveedores Analizados
+
+Se han analizado **12 proveedores** principales con sus respectivos archivos Excel de precios:
+
+1. **ALMCE** - Electrodomésticos generales
+2. **BSH** - Bosch, Siemens, Gaggenau
+3. **CECOTEC** - Pequeño electrodoméstico
+4. **JATA** - Electrodomésticos de cocina
+5. **NEVIR** - TV y audio
+6. **MIELECTRO** - Distribución general
+7. **BECKEN/TEGALUXE** - Electrodomésticos
+8. **EAS ELECTRIC & JOHNSON** - Línea blanca
+9. **ELECTRODIRECTO** - Distribución especializada
+10. **ORBEGOZO** - Pequeño electrodoméstico
+11. **UFESA** - Electrodomésticos de cocina
+12. **VITROKITCHEN/AIRPAL** - Cocinas y gas
+
+### Estructura de Precios Unificada
+
+#### Campos Principales Identificados
+- **Código**: Identificador del producto
+- **Descripción**: Nombre del producto
+- **Unidades**: Cantidad en stock
+- **Importe Bruto**: **PRECIO DE COMPRA** (base para cálculos)
+- **Descuentos**: Variables según proveedor (ver análisis detallado)
+- **PVP Final Cliente**: Precio de venta recomendado
+- **PVP Web**: ⚠️ **IGNORAR** - Datos de otros negocios para comparación
+
+#### Política de Márgenes
+- **Margen Base**: 25% sobre el precio de compra
+- **Editable**: El margen debe ser configurable por producto en el panel de administración
+- **Cálculo**: Precio Venta = Precio Compra × (1 + Margen/100)
+
+### Sistemas de Descuentos por Proveedor
+
+#### 🔴 Sistemas Complejos (Requieren Atención Especial)
+
+**1. ORBEGOZO** - Sistema de descuentos escalonados:
+- 33% DTO (descuento principal)
+- 3% DTO (descuento comercial)
+- 3% DTO (descuento adicional)
+- 5% DTO (descuento por volumen)
+- **Peculiaridad**: Descuentos acumulativos en cascada
+
+**2. EAS ELECTRIC & JOHNSON** - Sistema dual:
+- DTO (5%, 10%...) - Descuento porcentual variable
+- OTROS DTO - Descuentos adicionales específicos
+- **Peculiaridad**: Dos columnas de descuentos independientes
+
+**3. VITROKITCHEN** - Sistema de doble descuento:
+- DTO. (primera columna)
+- DTO. (segunda columna)
+- **Peculiaridad**: Aplicación secuencial de descuentos
+
+#### 🟡 Sistemas Intermedios
+
+**4. MIELECTRO** - Descuento simple:
+- DTO - Descuento único por producto
+- **Característica**: Sistema directo y claro
+
+**5. ELECTRODIRECTO** - Sistema fiscal:
+- RECARGO 5,20% - Recargo de equivalencia
+- IVA 21% - Impuesto sobre el valor añadido
+- **Peculiaridad**: Separación clara de impuestos
+
+**6. UFESA** - Descuento variable:
+- ?% DTO - Porcentaje de descuento no especificado
+- **Característica**: Requiere verificación manual
+
+#### 🟢 Sistemas Simples
+
+**7. ALMCE, BSH, CECOTEC, JATA, NEVIR** - Sin descuentos:
+- Precio directo sin descuentos aplicados
+- **Característica**: Precio neto de compra
+
+**8. BECKEN/TEGALUXE** - Sin descuentos:
+- Estructura simple con precio directo
+- **Característica**: Cálculo directo de márgenes
+
+### Recomendaciones de Implementación
+
+#### Fase 1: Implementación Básica
+1. **Importar productos** con precio de compra (Importe Bruto)
+2. **Aplicar margen del 25%** como precio base de venta
+3. **Ignorar PVP Web** en todos los archivos
+4. **Usar PVP Final Cliente** como precio de referencia
+
+#### Fase 2: Sistema de Descuentos (Futuro)
+1. **Crear módulo de descuentos** personalizado
+2. **Implementar reglas por proveedor** según análisis
+3. **Sistema de descuentos escalonados** para casos complejos
+4. **Interfaz de configuración** para gestión de descuentos
+
+#### Consideraciones Técnicas
+- **Base de datos**: Estructura preparada para múltiples descuentos
+- **API**: Endpoints para gestión de precios y descuentos
+- **Frontend**: Panel de administración con editor de márgenes
+- **Validación**: Controles para evitar precios negativos
+
 ## 🎨 Dashboard Frontend
 
 ### Páginas Implementadas

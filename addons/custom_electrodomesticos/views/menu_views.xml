@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Menú principal para Electrodomésticos -->
+        <menuitem id="menu_electrodomesticos_root"
+                  name="Electrodomésticos"
+                  sequence="50"/>
+        
+        <!-- Submenú de Gestión de Productos -->
+        <menuitem id="menu_electrodomesticos_productos"
+                  name="Productos"
+                  parent="menu_electrodomesticos_root"
+                  sequence="10"/>
+        
+        <!-- Menú de Incidencias -->
+        <menuitem id="menu_product_incident"
+                  name="Incidencias"
+                  parent="menu_electrodomesticos_productos"
+                  action="action_product_incident"
+                  sequence="10"/>
+        
+        <!-- Menú de Historial de Ventas -->
+        <menuitem id="menu_product_sales_history"
+                  name="Historial de Ventas"
+                  parent="menu_electrodomesticos_productos"
+                  action="action_product_sales_history"
+                  sequence="20"/>
+        
+        <!-- Submenú de Reportes -->
+        <menuitem id="menu_electrodomesticos_reportes"
+                  name="Reportes"
+                  parent="menu_electrodomesticos_root"
+                  sequence="20"/>
+        
+        <!-- Menú de Productos con Incidencias -->
+        <record id="action_products_with_incidents" model="ir.actions.act_window">
+            <field name="name">Productos con Incidencias</field>
+            <field name="res_model">product.template</field>
+            <field name="view_mode">tree,form</field>
+            <field name="domain">[('x_estado_producto', '!=', 'normal')]</field>
+            <field name="context">{'search_default_group_by_estado': 1}</field>
+        </record>
+        
+        <menuitem id="menu_products_with_incidents"
+                  name="Productos con Incidencias"
+                  parent="menu_electrodomesticos_reportes"
+                  action="action_products_with_incidents"
+                  sequence="10"/>
+        
+        <!-- Menú de Productos Más Vendidos -->
+        <record id="action_best_selling_products" model="ir.actions.act_window">
+            <field name="name">Productos Más Vendidos</field>
+            <field name="res_model">product.template</field>
+            <field name="view_mode">tree,form</field>
+            <field name="domain">[('x_vendidas', '>', 0)]</field>
+            <field name="context">{'search_default_order_by_vendidas': 1}</field>
+        </record>
+        
+        <menuitem id="menu_best_selling_products"
+                  name="Productos Más Vendidos"
+                  parent="menu_electrodomesticos_reportes"
+                  action="action_best_selling_products"
+                  sequence="20"/>
+    </data>
+</odoo>
