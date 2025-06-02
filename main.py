@@ -384,6 +384,9 @@ async def get_session(current_user: User = Depends(get_current_active_user)):
 
 @app.get("/api/v1/products", response_model=List[Product])
 async def get_products(current_user: User = Depends(get_current_active_user)):
+    import gc
+    common = None
+    models = None
     try:
         # Conexión con Odoo usando XML-RPC
         import xmlrpc.client
@@ -423,6 +426,8 @@ async def get_products(current_user: User = Depends(get_current_active_user)):
                 category = models.execute_kw(db, uid, password, 'product.category', 'read', [p['categ_id'][0]], {'fields': ['name']})
                 if category:
                     category_name = category[0]['name']
+                # Liberar memoria de la variable category
+                del category
             
             transformed_products.append({
                 "id": p['id'],
@@ -434,13 +439,27 @@ async def get_products(current_user: User = Depends(get_current_active_user)):
                 "image_url": f"https://example.com/images/product_{p['id']}.jpg"
             })
         
+        # Liberar memoria de variables grandes
+        del odoo_products
+        del product_ids
+        
         return transformed_products
     except Exception as e:
         print(f"Error al conectar con Odoo: {e}")
         return products  # Fallback a datos simulados si hay error
+    finally:
+        # Liberar conexiones XML-RPC y forzar recolección de basura
+        if common:
+            del common
+        if models:
+            del models
+        gc.collect()
 
 @app.get("/api/v1/products/{product_id}", response_model=Product)
 async def get_product(product_id: int, current_user: User = Depends(get_current_active_user)):
+    import gc
+    common = None
+    models = None
     try:
         # Conexión con Odoo usando XML-RPC
         import xmlrpc.client
@@ -484,6 +503,8 @@ async def get_product(product_id: int, current_user: User = Depends(get_current_
             category = models.execute_kw(db, uid, password, 'product.category', 'read', [p['categ_id'][0]], {'fields': ['name']})
             if category:
                 category_name = category[0]['name']
+            # Liberar memoria de la variable category
+            del category
         
         # Transformar a formato esperado por el frontend
         transformed_product = {
@@ -496,6 +517,10 @@ async def get_product(product_id: int, current_user: User = Depends(get_current_
             "image_url": f"https://example.com/images/product_{p['id']}.jpg"
         }
         
+        # Liberar memoria de variables
+        del odoo_product
+        del p
+        
         return transformed_product
     except Exception as e:
         print(f"Error al conectar con Odoo para obtener producto {product_id}: {e}")
@@ -504,6 +529,13 @@ async def get_product(product_id: int, current_user: User = Depends(get_current_
             if product["id"] == product_id:
                 return product
         raise HTTPException(status_code=404, detail="Product not found")
+    finally:
+        # Liberar conexiones XML-RPC y forzar recolección de basura
+        if common:
+            del common
+        if models:
+            del models
+        gc.collect()
 
 @app.get("/api/v1/inventory", response_model=List[InventoryItem])
 async def get_inventory(current_user: User = Depends(get_current_active_user)):
@@ -531,7 +563,71 @@ async def get_provider(provider_id: int, current_user: User = Depends(get_curren
 
 @app.post("/api/v1/providers", response_model=Provider)
 async def create_provider(provider_data: dict, current_user: User = Depends(get_current_active_user)):
-    # Generar nuevo ID
+    import gc
+    common = None
+    models = None
+    try:
+        # Conexión con Odoo usando XML-RPC
+        import xmlrpc.client
+        
+        # Configuración de conexión a Odoo
+        url = "http://localhost:8069"
+        db = "pelotazo"
+        username = "admin"
+        password = "admin"
+        
+        # Autenticación
+        common = xmlrpc.client.ServerProxy(f'{url}/xmlrpc/2/common')
+        uid = common.authenticate(db, username, password, {})
+        
+        if uid:
+            # Conexión al modelo de partners (proveedores)
+            models = xmlrpc.client.ServerProxy(f'{url}/xmlrpc/2/object')
+            
+            # Crear proveedor en Odoo como partner
+            partner_vals = {
+                'name': provider_data.get("name", ""),
+                'is_company': True,
+                'supplier_rank': 1,  # Marcar como proveedor
+                'customer_rank': 0,  # No es cliente
+            }
+            
+            # Crear partner en Odoo
+            odoo_partner_id = models.execute_kw(db, uid, password, 'res.partner', 'create', [partner_vals])
+            
+            # Crear respuesta con datos de Odoo
+            new_provider = {
+                "id": odoo_partner_id,
+                "name": provider_data.get("name", ""),
+                "tax_calculation_method": provider_data.get("tax_calculation_method", "excluded"),
+                "discount_type": provider_data.get("discount_type", "none"),
+                "payment_term": provider_data.get("payment_term", "30_days"),
+                "incentive_rules": provider_data.get("incentive_rules", ""),
+                "status": provider_data.get("status", "active")
+            }
+            
+            # También agregar a la lista local para compatibilidad
+            providers.append(new_provider)
+            
+            # Liberar memoria de variables
+            del partner_vals
+            del odoo_partner_id
+            
+            return new_provider
+            
+    except Exception as e:
+        print(f"Error al crear proveedor en Odoo: {e}")
+        # Fallback: crear solo en memoria local
+        pass
+    finally:
+        # Liberar conexiones XML-RPC y forzar recolección de basura
+        if common:
+            del common
+        if models:
+            del models
+        gc.collect()
+    
+    # Fallback: crear proveedor solo en memoria local
     new_id = max([p["id"] for p in providers], default=0) + 1
     
     new_provider = {
@@ -574,7 +670,97 @@ async def delete_provider(provider_id: int, current_user: User = Depends(get_cur
 # Rutas CRUD para Productos
 @app.post("/api/v1/products", response_model=Product)
 async def create_product(product_data: dict, current_user: User = Depends(get_current_active_user)):
-    # Generar nuevo ID
+    import gc
+    common = None
+    models = None
+    try:
+        # Conexión con Odoo usando XML-RPC
+        import xmlrpc.client
+        
+        # Configuración de conexión a Odoo
+        url = "http://localhost:8069"
+        db = "pelotazo"
+        username = "admin"
+        password = "admin"
+        
+        # Autenticación
+        common = xmlrpc.client.ServerProxy(f'{url}/xmlrpc/2/common')
+        uid = common.authenticate(db, username, password, {})
+        
+        if uid:
+            # Conexión al modelo de productos
+            models = xmlrpc.client.ServerProxy(f'{url}/xmlrpc/2/object')
+            
+            # Buscar o crear categoría
+            category_name = product_data.get("category", "Sin categoría")
+            category_id = 1  # Categoría por defecto
+            
+            if category_name != "Sin categoría":
+                # Buscar categoría existente
+                category_ids = models.execute_kw(db, uid, password, 'product.category', 'search', 
+                                               [[['name', '=', category_name]]])
+                
+                if category_ids:
+                    category_id = category_ids[0]
+                else:
+                    # Crear nueva categoría
+                    category_id = models.execute_kw(db, uid, password, 'product.category', 'create', 
+                                                   [{'name': category_name}])
+                # Liberar memoria de category_ids
+                del category_ids
+            
+            # Crear producto en Odoo
+            product_vals = {
+                'name': product_data.get("name", ""),
+                'default_code': product_data.get("code", ""),
+                'categ_id': category_id,
+                'list_price': product_data.get("price", 0.0),
+                'type': 'consu',  # 'consu' para productos físicos (Goods)
+                'sale_ok': True,
+                'purchase_ok': True,
+            }
+            
+            # Crear producto en Odoo
+            odoo_product_id = models.execute_kw(db, uid, password, 'product.template', 'create', [product_vals])
+            
+            # Nota: Los productos de tipo 'consu' no pueden tener stock en Odoo
+            # El stock se manejará solo a nivel de la aplicación local
+            stock_qty = product_data.get("stock", 0)
+            
+            # Crear respuesta con datos de Odoo
+            new_product = {
+                "id": odoo_product_id,
+                "name": product_data.get("name", ""),
+                "code": product_data.get("code", f"PROD-{odoo_product_id}"),
+                "category": category_name,
+                "price": product_data.get("price", 0.0),
+                "stock": stock_qty,
+                "image_url": product_data.get("image_url", f"https://example.com/images/product_{odoo_product_id}.jpg")
+            }
+            
+            # También agregar a la lista local para compatibilidad
+            products.append(new_product)
+            
+            # Liberar memoria de variables
+            del product_vals
+            del odoo_product_id
+            del stock_qty
+            
+            return new_product
+            
+    except Exception as e:
+        print(f"Error al crear producto en Odoo: {e}")
+        # Fallback: crear solo en memoria local
+        pass
+    finally:
+        # Liberar conexiones XML-RPC y forzar recolección de basura
+        if common:
+            del common
+        if models:
+            del models
+        gc.collect()
+    
+    # Fallback: crear producto solo en memoria local
     new_id = max([p["id"] for p in products], default=0) + 1
     
     new_product = {
@@ -592,6 +778,106 @@ async def create_product(product_data: dict, current_user: User = Depends(get_cu
 
 @app.put("/api/v1/products/{product_id}", response_model=Product)
 async def update_product(product_id: int, product_data: dict, current_user: User = Depends(get_current_active_user)):
+    try:
+        # Conexión con Odoo usando XML-RPC
+        import xmlrpc.client
+        
+        # Configuración de conexión a Odoo
+        url = "http://localhost:8069"
+        db = "pelotazo"
+        username = "admin"
+        password = "admin"
+        
+        # Autenticación
+        common = xmlrpc.client.ServerProxy(f'{url}/xmlrpc/2/common')
+        uid = common.authenticate(db, username, password, {})
+        
+        if uid:
+            # Conexión al modelo de productos
+            models = xmlrpc.client.ServerProxy(f'{url}/xmlrpc/2/object')
+            
+            # Buscar o crear categoría si se especifica
+            category_name = product_data.get("category")
+            category_id = None
+            
+            if category_name:
+                # Buscar categoría existente
+                category_ids = models.execute_kw(db, uid, password, 'product.category', 'search', 
+                                               [[['name', '=', category_name]]])
+                
+                if category_ids:
+                    category_id = category_ids[0]
+                else:
+                    # Crear nueva categoría
+                    category_id = models.execute_kw(db, uid, password, 'product.category', 'create', 
+                                                   [{'name': category_name}])
+            
+            # Preparar valores para actualizar
+            product_vals = {}
+            
+            if "name" in product_data:
+                product_vals['name'] = product_data["name"]
+            if "code" in product_data:
+                product_vals['default_code'] = product_data["code"]
+            if category_id:
+                product_vals['categ_id'] = category_id
+            if "price" in product_data:
+                product_vals['list_price'] = product_data["price"]
+            
+            # Actualizar producto en Odoo
+            models.execute_kw(db, uid, password, 'product.template', 'write', [[product_id], product_vals])
+            
+            # Nota: El stock se maneja solo a nivel de aplicación local
+            # Los productos 'consu' en Odoo no pueden tener stock
+            
+            # Actualizar también en la lista local
+            for i, product in enumerate(products):
+                if product["id"] == product_id:
+                    # Actualizar campos
+                    products[i].update({
+                        "name": product_data.get("name", product["name"]),
+                        "code": product_data.get("code", product["code"]),
+                        "category": product_data.get("category", product["category"]),
+                        "price": product_data.get("price", product["price"]),
+                        "stock": product_data.get("stock", product["stock"]),
+                        "image_url": product_data.get("image_url", product["image_url"])
+                    })
+                    return products[i]
+            
+            # Si no se encuentra en la lista local pero existe en Odoo, obtener datos de Odoo
+            product_data = models.execute_kw(db, uid, password, 'product.template', 'read', 
+                                           [[product_id]], {'fields': ['name', 'default_code', 'categ_id', 'list_price']})
+            
+            if product_data:
+                product_info = product_data[0]
+                category_name = "Sin categoría"
+                
+                if product_info.get('categ_id'):
+                    category_data = models.execute_kw(db, uid, password, 'product.category', 'read', 
+                                                    [[product_info['categ_id'][0]]], {'fields': ['name']})
+                    if category_data:
+                        category_name = category_data[0]['name']
+                
+                # Crear entrada en la lista local
+                new_product = {
+                    "id": product_id,
+                    "name": product_info.get("name", ""),
+                    "code": product_info.get("default_code", ""),
+                    "category": category_name,
+                    "price": product_info.get("list_price", 0.0),
+                    "stock": product_data.get("stock", 0),
+                    "image_url": product_data.get("image_url", f"https://example.com/images/product_{product_id}.jpg")
+                }
+                
+                products.append(new_product)
+                return new_product
+                
+    except Exception as e:
+        print(f"Error al actualizar producto en Odoo: {e}")
+        # Fallback: actualizar solo en memoria local
+        pass
+    
+    # Fallback: actualizar producto solo en memoria local
     for i, product in enumerate(products):
         if product["id"] == product_id:
             # Actualizar campos
@@ -608,10 +894,50 @@ async def update_product(product_id: int, product_data: dict, current_user: User
 
 @app.delete("/api/v1/products/{product_id}")
 async def delete_product(product_id: int, current_user: User = Depends(get_current_active_user)):
+    try:
+        # Conexión con Odoo usando XML-RPC
+        import xmlrpc.client
+        
+        # Configuración de conexión a Odoo
+        url = "http://localhost:8069"
+        db = "pelotazo"
+        username = "admin"
+        password = "admin"
+        
+        # Autenticación
+        common = xmlrpc.client.ServerProxy(f'{url}/xmlrpc/2/common')
+        uid = common.authenticate(db, username, password, {})
+        
+        if uid:
+            # Conexión al modelo de productos
+            models = xmlrpc.client.ServerProxy(f'{url}/xmlrpc/2/object')
+            
+            # Verificar si el producto existe en Odoo
+            product_exists = models.execute_kw(db, uid, password, 'product.template', 'search', 
+                                             [[['id', '=', product_id]]])
+            
+            if product_exists:
+                # Eliminar producto de Odoo
+                models.execute_kw(db, uid, password, 'product.template', 'unlink', [[product_id]])
+                
+                # También eliminar de la lista local
+                for i, product in enumerate(products):
+                    if product["id"] == product_id:
+                        products.pop(i)
+                        break
+                
+                return {"message": "Product deleted successfully from Odoo and local storage"}
+            
+    except Exception as e:
+        print(f"Error al eliminar producto de Odoo: {e}")
+        # Fallback: eliminar solo de memoria local
+        pass
+    
+    # Fallback: eliminar producto solo de memoria local
     for i, product in enumerate(products):
         if product["id"] == product_id:
             products.pop(i)
-            return {"message": "Product deleted successfully"}
+            return {"message": "Product deleted successfully from local storage"}
     raise HTTPException(status_code=404, detail="Product not found")
 
 @app.get("/api/v1/dashboard/stats", response_model=Dict[str, Any])
