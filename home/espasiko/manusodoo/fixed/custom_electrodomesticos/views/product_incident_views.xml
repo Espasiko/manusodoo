@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Vista de formulario para product.incident -->
+        <record id="product_incident_form_view" model="ir.ui.view">
+            <field name="name">product.incident.form</field>
+            <field name="model">product.incident</field>
+            <field name="arch" type="xml">
+                <form>
+                    <header>
+                        <field name="state" widget="statusbar" statusbar_visible="draft,confirmed,done,cancelled"/>
+                        <button name="action_confirm" string="Confirmar" type="object" class="oe_highlight" states="draft"/>
+                        <button name="action_done" string="Marcar como Resuelto" type="object" class="oe_highlight" states="confirmed"/>
+                        <button name="action_cancel" string="Cancelar" type="object" states="draft,confirmed"/>
+                        <button name="action_draft" string="Volver a Borrador" type="object" states="cancelled"/>
+                    </header>
+                    <sheet>
+                        <div class="oe_title">
+                            <h1>
+                                <field name="name" readonly="1"/>
+                            </h1>
+                        </div>
+                        <group>
+                            <group>
+                                <field name="product_id" options="{'no_create': True}"/>
+                                <field name="fecha"/>
+                                <field name="tipo"/>
+                                <field name="motivo"/>
+                            </group>
+                            <group>
+                                <field name="cliente_id" options="{'no_create': True}"/>
+                                <field name="total"/>
+                                <field name="user_id"/>
+                            </group>
+                        </group>
+                        <notebook>
+                            <page string="Descripción">
+                                <field name="descripcion" nolabel="1" placeholder="Describa la incidencia..."/>
+                            </page>
+                            <page string="Notas">
+                                <field name="notas" nolabel="1" placeholder="Notas adicionales..."/>
+                            </page>
+                        </notebook>
+                    </sheet>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids" widget="mail_followers"/>
+                        <field name="message_ids" widget="mail_thread"/>
+                    </div>
+                </form>
+            </field>
+        </record>
+        
+        <!-- Vista de árbol para product.incident -->
+        <record id="product_incident_tree_view" model="ir.ui.view">
+            <field name="name">product.incident.tree</field>
+            <field name="model">product.incident</field>
+            <field name="arch" type="xml">
+                <tree decoration-info="state == 'draft'" decoration-success="state == 'done'" decoration-warning="state == 'confirmed'" decoration-danger="state == 'cancelled'">
+                    <field name="name"/>
+                    <field name="product_id"/>
+                    <field name="fecha"/>
+                    <field name="tipo"/>
+                    <field name="motivo"/>
+                    <field name="cliente_id"/>
+                    <field name="total" sum="Total"/>
+                    <field name="state"/>
+                </tree>
+            </field>
+        </record>
+        
+        <!-- Vista de búsqueda para product.incident -->
+        <record id="product_incident_search_view" model="ir.ui.view">
+            <field name="name">product.incident.search</field>
+            <field name="model">product.incident</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="name"/>
+                    <field name="product_id"/>
+                    <field name="cliente_id"/>
+                    <field name="tipo"/>
+                    <field name="motivo"/>
+                    <filter string="Mis Incidencias" name="my_incidents" domain="[('user_id', '=', uid)]"/>
+                    <filter string="Borrador" name="draft" domain="[('state', '=', 'draft')]"/>
+                    <filter string="Confirmado" name="confirmed" domain="[('state', '=', 'confirmed')]"/>
+                    <filter string="Resuelto" name="done" domain="[('state', '=', 'done')]"/>
+                    <filter string="Cancelado" name="cancelled" domain="[('state', '=', 'cancelled')]"/>
+                    <group expand="0" string="Agrupar por">
+                        <filter string="Producto" name="group_by_product" context="{'group_by': 'product_id'}"/>
+                        <filter string="Cliente" name="group_by_customer" context="{'group_by': 'cliente_id'}"/>
+                        <filter string="Tipo" name="group_by_type" context="{'group_by': 'tipo'}"/>
+                        <filter string="Estado" name="group_by_state" context="{'group_by': 'state'}"/>
+                        <filter string="Fecha" name="group_by_date" context="{'group_by': 'fecha'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+        
+        <!-- Acción para product.incident -->
+        <record id="action_product_incident" model="ir.actions.act_window">
+            <field name="name">Incidencias de Productos</field>
+            <field name="res_model">product.incident</field>
+            <field name="view_mode">tree,form</field>
+            <field name="search_view_id" ref="product_incident_search_view"/>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Registre su primera incidencia de producto
+                </p>
+                <p>
+                    Las incidencias de productos le permiten registrar problemas como roturas, devoluciones o reclamaciones.
+                </p>
+            </field>
+        </record>
+    </data>
+</odoo>

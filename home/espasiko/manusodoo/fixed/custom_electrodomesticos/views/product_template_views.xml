@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Modificación de la vista formulario de producto -->
+        <record id="product_template_form_view_inherit" model="ir.ui.view">
+            <field name="name">product.template.form.inherit</field>
+            <field name="model">product.template</field>
+            <field name="inherit_id" ref="product.product_template_form_view"/>
+            <field name="arch" type="xml">
+                <xpath expr="//notebook" position="inside">
+                    <page string="Información Adicional" name="info_adicional">
+                        <group>
+                            <group string="Información de Proveedor">
+                                <field name="x_proveedor"/>
+                                <field name="x_referencia_proveedor"/>
+                                <field name="x_fecha_compra"/>
+                            </group>
+                            <group string="Información de Venta">
+                                <field name="x_fecha_venta"/>
+                                <field name="x_vendidas"/>
+                                <field name="x_tienda"/>
+                                <field name="x_beneficio_unitario"/>
+                                <field name="x_beneficio_total"/>
+                            </group>
+                        </group>
+                        <group string="Estado y Notas">
+                            <field name="x_estado_producto"/>
+                            <field name="x_notas"/>
+                        </group>
+                    </page>
+                    <page string="Incidencias" name="incidencias">
+                        <field name="x_incidencias">
+                            <tree>
+                                <field name="fecha"/>
+                                <field name="tipo"/>
+                                <field name="descripcion"/>
+                                <field name="cliente"/>
+                                <field name="state"/>
+                            </tree>
+                        </field>
+                    </page>
+                </xpath>
+            </field>
+        </record>
+
+        <!-- Modificación de la vista árbol de producto -->
+        <record id="product_template_tree_view_inherit" model="ir.ui.view">
+            <field name="name">product.template.tree.inherit</field>
+            <field name="model">product.template</field>
+            <field name="inherit_id" ref="product.product_template_tree_view"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='list_price']" position="after">
+                    <field name="x_estado_producto" optional="show"/>
+                    <field name="x_vendidas" optional="hide"/>
+                    <field name="x_tienda" optional="hide"/>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>

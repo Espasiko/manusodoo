@@ -8,6 +8,7 @@ import os
 from datetime import datetime, timedelta
 import jwt
 from uuid import uuid4
+import requests
 
 # Configuración de la aplicación
 SECRET_KEY = "odoo_middleware_secret_key"
@@ -92,6 +93,10 @@ class Provider(BaseModel):
     payment_term: str
     incentive_rules: Optional[str] = None
     status: str = "active"
+
+# Configuración de Odoo desde variables de entorno
+ODOO_URL = os.getenv("VITE_ODOO_URL", "http://localhost:8069")
+ODOO_DB = os.getenv("VITE_ODOO_DB", "pelotazo")
 
 # Base de datos simulada (en memoria)
 fake_users_db = {
@@ -315,12 +320,34 @@ def get_user(db, username: str):
     return None
 
 def authenticate_user(fake_db, username: str, password: str):
-    user = get_user(fake_db, username)
-    if not user:
+    # Autenticar directamente contra Odoo
+    try:
+        response = requests.post(f"{ODOO_URL}/web/session/authenticate", 
+                               json={
+                                   "jsonrpc": "2.0",
+                                   "params": {
+                                       "db": ODOO_DB,
+                                       "login": username,
+                                       "password": password,
+                                   },
+                               },
+                               timeout=10)
+        
+        if response.status_code == 200:
+            result = response.json()
+            if result.get("result") and result["result"].get("uid"):
+                # Si la autenticación es exitosa, crear un usuario temporal
+                return UserInDB(
+                    username=username,
+                    full_name=result["result"].get("name", username),
+                    email=f"{username}@odoo.local",
+                    hashed_password=password,  # En este caso no importa el hash
+                    disabled=False
+                )
         return False
-    if not verify_password(password, user.hashed_password):
+    except Exception as e:
+        print(f"Error autenticando con Odoo: {e}")
         return False
-    return user
 
 def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):
     to_encode = data.copy()

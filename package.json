@@ -4,6 +4,7 @@
   "private": true,
   "dependencies": {
     "@ant-design/icons": "^5.0.1",
+    "@modelcontextprotocol/server-postgres": "^0.6.2",
     "@refinedev/antd": "^5.7.0",
     "@refinedev/core": "^4.28.2",
     "@refinedev/kbar": "^1.1.0",
