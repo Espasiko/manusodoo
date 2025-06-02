@@ -1,0 +1,131 @@
+import React from 'react';
+import {
+  List,
+  Table,
+  useTable,
+  EditButton,
+  ShowButton,
+  DeleteButton,
+  CreateButton,
+  Form,
+  Input,
+  Select,
+} from '@refinedev/antd';
+import { IResourceComponentsProps } from '@refinedev/core';
+
+export const ProvidersList: React.FC<IResourceComponentsProps> = () => {
+  const { tableProps } = useTable({
+    syncWithLocation: true,
+  });
+
+  return (
+    <List
+      createButtonProps={{ size: 'large' }}
+    >
+      <Table {...tableProps} rowKey="id">
+        <Table.Column dataIndex="id" title="ID" />
+        <Table.Column dataIndex="name" title="Nombre" />
+        <Table.Column dataIndex="tax_calculation_method" title="Método de Cálculo IVA" />
+        <Table.Column dataIndex="supplier_discount_type" title="Tipo de Descuento" />
+        <Table.Column dataIndex="payment_term" title="Términos de Pago" />
+        <Table.Column
+          title="Acciones"
+          dataIndex="actions"
+          render={(_, record) => (
+            <Space>
+              <EditButton hideText size="small" recordItemId={record.id} />
+              <ShowButton hideText size="small" recordItemId={record.id} />
+              <DeleteButton hideText size="small" recordItemId={record.id} />
+            </Space>
+          )}
+        />
+      </Table>
+    </List>
+  );
+}; 
+2. Actualizar App.tsx para incluir el nuevo recurso: 
+resources={[
+  // ... otros recursos existentes ...
+  {
+    name: "providers",
+    list: "/providers",
+    create: "/providers/create",
+    edit: "/providers/edit/:id",
+    show: "/providers/show/:id",
+    meta: {
+      label: "Proveedores",
+      icon: <TeamOutlined />,
+    },
+  },
+]}
+3. Actualizar el Sider para incluir el enlace a Proveedores: 
+{
+  key: 'providers',
+  icon: <TeamOutlined />,
+  label: <Link to="/providers">Proveedores</Link>,
+} 
+campos del formulario del proveedor: 
+<Form {...formProps}>
+  <Form.Item
+    label="Nombre"
+    name="name"
+    rules={[{ required: true }]}
+  >
+    <Input />
+  </Form.Item>
+  
+  <Form.Item
+    label="Método de Cálculo IVA"
+    name="tax_calculation_method"
+    rules={[{ required: true }]}
+  >
+    <Select>
+      <Select.Option value="standard">IVA Estándar (21%)</Select.Option>
+      <Select.Option value="recargo">IVA + Recargo (26.2%)</Select.Option>
+    </Select>
+  </Form.Item>
+
+  <Form.Item
+    label="Tipo de Descuento"
+    name="supplier_discount_type"
+  >
+    <Select>
+      <Select.Option value="fixed">Descuento Fijo</Select.Option>
+      <Select.Option value="volume">Por Volumen</Select.Option>
+      <Select.Option value="seasonal">Temporal</Select.Option>
+    </Select>
+  </Form.Item>
+
+  <Form.Item
+    label="Términos de Pago"
+    name="payment_term"
+  >
+    <Select>
+      <Select.Option value="immediate">Inmediato</Select.Option>
+      <Select.Option value="30_days">30 Días</Select.Option>
+      <Select.Option value="60_days">60 Días</Select.Option>
+    </Select>
+  </Form.Item>
+
+  <Form.Item
+    label="Reglas de Incentivos"
+    name="incentive_rules"
+  >
+    <Input.TextArea rows={4} placeholder="Descripción de reglas de incentivos" />
+  </Form.Item>
+</Form>
+Esta implementación te permitirá:
+
+1. Ver lista de proveedores con sus configuraciones específicas
+2. Crear nuevos proveedores
+3. Editar proveedores existentes
+4. Eliminar proveedores
+5. Ver detalles completos de cada proveedor
+Una vez implementado, podremos proceder con la limpieza de datos de Cecotec y la configuración de sus reglas específicas en el sistema.
+
+Para continuar con el plan:
+
+1. Implementar estos cambios
+2. Verificar el funcionamiento de la interfaz
+3. Proceder con la limpieza de datos de Cecotec
+4. Configurar las reglas específicas de Cecotec en el nuevo sistema

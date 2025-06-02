@@ -1,0 +1,15 @@
+INFO:     Started server process [378813]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://0.0.0.0:5000 (Press CTRL+C to quit)
+INFO:     127.0.0.1:51212 - "GET / HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57966 - "GET / HTTP/1.1" 200 OK
+INFO:     127.0.0.1:48990 - "GET / HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49006 - "GET /?ide_webview_request_time=1748534958727 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59508 - "GET / HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59760 - "GET / HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59760 - "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 Not Found
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [378813]
