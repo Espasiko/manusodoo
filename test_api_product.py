@@ -2,7 +2,7 @@ import requests
 import json
 
 # Configuración de la API
-api_url = "http://localhost:8000"
+api_url = "http://localhost:8001"
 
 # Datos de autenticación
 auth_data = {
