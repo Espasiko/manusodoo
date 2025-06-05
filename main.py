@@ -392,7 +392,7 @@ async def get_products(current_user: User = Depends(get_current_active_user)):
         import xmlrpc.client
         
         # Configuración de conexión a Odoo
-        url = "http://localhost:8069"
+        url = "http://localhost:8070"
         db = "pelotazo"
         username = "admin"
         password = "admin"
@@ -465,7 +465,7 @@ async def get_product(product_id: int, current_user: User = Depends(get_current_
         import xmlrpc.client
         
         # Configuración de conexión a Odoo
-        url = "http://localhost:8069"
+        url = "http://localhost:8070"
         db = "pelotazo"
         username = "admin"
         password = "admin"
@@ -552,6 +552,62 @@ async def get_customers(current_user: User = Depends(get_current_active_user)):
 # Rutas para Proveedores
 @app.get("/api/v1/providers", response_model=List[Provider])
 async def get_providers(current_user: User = Depends(get_current_active_user)):
+    import gc
+    common = None
+    models = None
+    try:
+        # Conexión con Odoo usando XML-RPC
+        import xmlrpc.client
+        
+        # Configuración de conexión a Odoo
+        url = "http://localhost:8070"
+        db = "pelotazo"
+        username = "admin"
+        password = "admin"
+        
+        # Autenticación
+        common = xmlrpc.client.ServerProxy(f'{url}/xmlrpc/2/common')
+        uid = common.authenticate(db, username, password, {})
+        
+        if uid:
+            # Conexión al modelo de partners (proveedores)
+            models = xmlrpc.client.ServerProxy(f'{url}/xmlrpc/2/object')
+            
+            # Buscar proveedores en Odoo
+            provider_ids = models.execute_kw(db, uid, password, 'res.partner', 'search', 
+                                           [[['supplier_rank', '>', 0]]])
+            
+            if provider_ids:
+                # Obtener datos de los proveedores
+                provider_data = models.execute_kw(db, uid, password, 'res.partner', 'read', 
+                                                [provider_ids], {'fields': ['id', 'name']})
+                
+                # Convertir a formato esperado
+                odoo_providers = []
+                for provider in provider_data:
+                    odoo_providers.append({
+                        "id": provider['id'],
+                        "name": provider['name'],
+                        "tax_calculation_method": "excluded",
+                        "discount_type": "percentage", 
+                        "payment_term": "30_days",
+                        "incentive_rules": "",
+                        "status": "active"
+                    })
+                
+                return odoo_providers
+                
+    except Exception as e:
+        print(f"Error al obtener proveedores de Odoo: {e}")
+    finally:
+        # Liberar conexiones XML-RPC y forzar recolección de basura
+        if common:
+            del common
+        if models:
+            del models
+        gc.collect()
+    
+    # Fallback: devolver datos de ejemplo
     return providers
 
 @app.get("/api/v1/providers/{provider_id}", response_model=Provider)
@@ -571,7 +627,7 @@ async def create_provider(provider_data: dict, current_user: User = Depends(get_
         import xmlrpc.client
         
         # Configuración de conexión a Odoo
-        url = "http://localhost:8069"
+        url = "http://localhost:8070"
         db = "pelotazo"
         username = "admin"
         password = "admin"
@@ -678,7 +734,7 @@ async def create_product(product_data: dict, current_user: User = Depends(get_cu
         import xmlrpc.client
         
         # Configuración de conexión a Odoo
-        url = "http://localhost:8069"
+        url = "http://localhost:8070"
         db = "pelotazo"
         username = "admin"
         password = "admin"
@@ -783,7 +839,7 @@ async def update_product(product_id: int, product_data: dict, current_user: User
         import xmlrpc.client
         
         # Configuración de conexión a Odoo
-        url = "http://localhost:8069"
+        url = "http://localhost:8070"
         db = "pelotazo"
         username = "admin"
         password = "admin"
@@ -899,7 +955,7 @@ async def delete_product(product_id: int, current_user: User = Depends(get_curre
         import xmlrpc.client
         
         # Configuración de conexión a Odoo
-        url = "http://localhost:8069"
+        url = "http://localhost:8070"
         db = "pelotazo"
         username = "admin"
         password = "admin"
@@ -948,7 +1004,7 @@ async def get_dashboard_stats(current_user: User = Depends(get_current_active_us
         from collections import Counter
         
         # Configuración de conexión a Odoo
-        url = "http://localhost:8069"
+        url = "http://localhost:8070"
         db = "pelotazo"
         username = "admin"
         password = "admin"

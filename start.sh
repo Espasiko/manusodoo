@@ -45,12 +45,12 @@ if ! docker info &> /dev/null; then
 fi
 
 # Verificar si los contenedores ya están ejecutándose
-if docker ps | grep -q "last_odoo_1\|last_db_1"; then
+if docker ps | grep -q "manusodoo-roto_odoo_1\|manusodoo-roto_db_1\|manusodoo-roto_adminer_1"; then
     print_warning "Los contenedores ya están ejecutándose"
     docker ps --format "table {{.Names}}\t{{.Status}}\t{{.Ports}}"
 else
     # Iniciar contenedores Docker
-    print_status "Iniciando contenedores Odoo y PostgreSQL..."
+    print_status "Iniciando contenedores Odoo, PostgreSQL y Adminer..."
     docker-compose up -d
     
     if [ $? -ne 0 ]; then
@@ -61,7 +61,7 @@ fi
 
 # Esperar a que PostgreSQL esté listo
 print_status "Esperando a que PostgreSQL esté disponible..."
-while ! docker exec last_db_1 pg_isready -U odoo &> /dev/null; do
+while ! docker exec manusodoo-roto_db_1 pg_isready -U odoo &> /dev/null; do
     echo -n "."
     sleep 2
 done
@@ -72,13 +72,13 @@ print_status "✅ PostgreSQL está listo"
 print_status "Esperando a que Odoo esté disponible..."
 retries=0
 max_retries=30
-while ! curl -s http://localhost:8069 > /dev/null; do
+while ! curl -s http://localhost:8070 > /dev/null; do
     echo -n "."
     sleep 5
     retries=$((retries + 1))
     if [ $retries -ge $max_retries ]; then
         print_error "Timeout esperando a Odoo. Verificando logs..."
-        docker logs --tail 20 last_odoo_1
+        docker logs --tail 20 manusodoo-roto_odoo_1
         exit 1
     fi
 done
@@ -145,15 +145,16 @@ fi
 # Mostrar estado del sistema
 echo ""
 print_info "=== Estado del Sistema ==="
-docker ps --format "table {{.Names}}\t{{.Status}}\t{{.Ports}}" | grep -E "NAMES|last_"
+docker ps --format "table {{.Names}}\t{{.Status}}\t{{.Ports}}" | grep -E "NAMES|manusodoo-roto_"
 
 echo ""
 print_status "🎉 Sistema iniciado correctamente"
 echo ""
 echo "📋 Servicios disponibles:"
-echo "   🏢 Odoo ERP: http://localhost:8069"
-echo "   🗄️  PostgreSQL: localhost:5433"
+echo "   🏢 Odoo ERP: http://localhost:8070"
+echo "   🗄️  PostgreSQL: localhost:5434"
 echo "   🔌 API FastAPI: http://localhost:8001"
+echo "   🛠️  Adminer: http://localhost:8080"
 if [ "$1" = "--with-frontend" ]; then
     echo "   🖥️  Frontend: http://localhost:3001"
 else
@@ -165,7 +166,8 @@ echo "   ./start.sh --with-frontend  - Iniciar todo el sistema incluyendo fronte
 echo "   ./dev-dashboard.sh         - Iniciar dashboard en modo desarrollo"
 echo "   ./stop.sh                  - Detener todos los servicios"
 echo "   ./backup.sh                - Crear backup del sistema"
-echo "   docker logs last_odoo_1    - Ver logs de Odoo"
-echo "   docker logs last_db_1      - Ver logs de PostgreSQL"
+echo "   docker logs manusodoo-roto_odoo_1    - Ver logs de Odoo"
+echo "   docker logs manusodoo-roto_db_1      - Ver logs de PostgreSQL"
+echo "   docker logs manusodoo-roto_adminer_1 - Ver logs de Adminer"
 echo "   cat uvicorn.log            - Ver logs de FastAPI"
 echo ""
