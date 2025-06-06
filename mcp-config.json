@@ -2,17 +2,12 @@
   "mcpServers": {
     "postgres": {
       "command": "npx",
-      "args": ["-y", "@modelcontextprotocol/server-postgres", "postgresql://odoo:odoo@localhost:5433/pelotazo"],
-      "env": {}
-    },
-    "sqlite": {
-      "command": "uvx",
-      "args": ["mcp-server-sqlite", "--db-path", "/home/espasiko/manusodoo/last/project.db"],
+      "args": ["-y", "@modelcontextprotocol/server-postgres", "postgresql://odoo:odoo@localhost:5434/manus_odoo-bd"],
       "env": {}
     },
     "filesystem": {
       "command": "npx",
-      "args": ["-y", "@modelcontextprotocol/server-filesystem", "/home/espasiko/manusodoo/last"],
+      "args": ["-y", "@modelcontextprotocol/server-filesystem", "/home/espasiko/mainmanusodoo/manusodoo-roto"],
       "env": {}
     },
     "puppeteer": {
@@ -25,12 +20,29 @@
       "args": ["docker-mcp"],
       "env": {}
     },
-    "excel": {
+    "context7": {
+      "command": "npx",
+      "args": ["-y", "@upstash/context7-mcp"],
+      "env": {},
+      "fromGalleryId": "upstash.context7"
+    },
+    "time": {
       "command": "uvx",
-      "args": ["excel-mcp-server", "stdio"],
+      "args": ["mcp-server-time", "--local-timezone=Europe/Madrid"],
+      "fromGalleryId": "modelcontextprotocol.servers_time"
+    },
+    "excel": {
+      "command": "npx",
+      "args": ["--yes", "@negokaz/excel-mcp-server"],
       "env": {
-        "EXCEL_FILES_PATH": "/home/espasiko/manusodoo/last/ejemplos"
+        "EXCEL_MCP_PAGING_CELLS_LIMIT": "4000",
+        "EXCEL_FILES_PATH": "/home/espasiko/mainmanusodoo/manusodoo-roto/ejemplos"
       }
+    },
+    "memory": {
+      "command": "docker",
+      "args": ["run", "-i", "-v", "claude-memory:/app/dist", "--rm", "mcp/memory"],
+      "fromGalleryId": "modelcontextprotocol.servers_memory"
     }
   }
 }

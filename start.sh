@@ -47,7 +47,7 @@ fi
 # Verificar si los contenedores ya están ejecutándose
 if docker ps | grep -q "manusodoo-roto_odoo_1\|manusodoo-roto_db_1\|manusodoo-roto_adminer_1"; then
     print_warning "Los contenedores ya están ejecutándose"
-    docker ps --format "table {{.Names}}\t{{.Status}}\t{{.Ports}}"
+    docker ps --format "table {{.Names}}\t{{.Status}}\t{{.Ports}}" | grep -E "NAMES|manusodoo-roto_"
 else
     # Iniciar contenedores Docker
     print_status "Iniciando contenedores Odoo, PostgreSQL y Adminer..."
@@ -61,9 +61,17 @@ fi
 
 # Esperar a que PostgreSQL esté listo
 print_status "Esperando a que PostgreSQL esté disponible..."
+retries=0
+max_retries=30
 while ! docker exec manusodoo-roto_db_1 pg_isready -U odoo &> /dev/null; do
     echo -n "."
     sleep 2
+    retries=$((retries + 1))
+    if [ $retries -ge $max_retries ]; then
+        print_error "Timeout esperando a PostgreSQL. Verificando logs..."
+        docker logs --tail 20 manusodoo-roto_db_1
+        exit 1
+    fi
 done
 echo ""
 print_status "✅ PostgreSQL está listo"
@@ -168,6 +176,5 @@ echo "   ./stop.sh                  - Detener todos los servicios"
 echo "   ./backup.sh                - Crear backup del sistema"
 echo "   docker logs manusodoo-roto_odoo_1    - Ver logs de Odoo"
 echo "   docker logs manusodoo-roto_db_1      - Ver logs de PostgreSQL"
-echo "   docker logs manusodoo-roto_adminer_1 - Ver logs de Adminer"
 echo "   cat uvicorn.log            - Ver logs de FastAPI"
 echo ""
