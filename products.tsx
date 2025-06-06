@@ -31,54 +31,8 @@ const Products: React.FC = () => {
       setProducts(data);
     } catch (error) {
       console.error('Error fetching products:', error);
-      // Fallback data
-      setProducts([
-        {
-          id: 1,
-          name: "Refrigerador Samsung",
-          code: "REF-001",
-          category: "Electrodomésticos",
-          price: 899.99,
-          stock: 15,
-          image_url: "https://example.com/images/refrigerator.jpg"
-        },
-        {
-          id: 2,
-          name: "Lavadora LG",
-          code: "LAV-002",
-          category: "Electrodomésticos",
-          price: 649.99,
-          stock: 8,
-          image_url: "https://example.com/images/washing-machine.jpg"
-        },
-        {
-          id: 3,
-          name: "Microondas Panasonic",
-          code: "MIC-003",
-          category: "Electrodomésticos",
-          price: 199.99,
-          stock: 25,
-          image_url: "https://example.com/images/microwave.jpg"
-        },
-        {
-          id: 4,
-          name: "Aspiradora Dyson",
-          code: "ASP-004",
-          category: "Limpieza",
-          price: 399.99,
-          stock: 3,
-          image_url: "https://example.com/images/vacuum.jpg"
-        },
-        {
-          id: 5,
-          name: "Televisor Sony 55\"",
-          code: "TV-005",
-          category: "Electrónicos",
-          price: 1299.99,
-          stock: 12,
-          image_url: "https://example.com/images/tv.jpg"
-        }
-      ]);
+      setProducts([]);
+      message.error('No se pudieron obtener productos del backend.');
     } finally {
       setLoading(false);
     }

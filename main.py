@@ -393,8 +393,8 @@ async def get_products(current_user: User = Depends(get_current_active_user)):
         
         # Configuración de conexión a Odoo
         url = "http://localhost:8070"
-        db = "pelotazo"
-        username = "admin"
+        db = "manus_odoo-bd"
+        username = "yo@mail.com"
         password = "admin"
         
         # Autenticación
@@ -466,8 +466,8 @@ async def get_product(product_id: int, current_user: User = Depends(get_current_
         
         # Configuración de conexión a Odoo
         url = "http://localhost:8070"
-        db = "pelotazo"
-        username = "admin"
+        db = "manus_odoo-bd"
+        username = "yo@mail.com"
         password = "admin"
         
         # Autenticación
@@ -561,8 +561,8 @@ async def get_providers(current_user: User = Depends(get_current_active_user)):
         
         # Configuración de conexión a Odoo
         url = "http://localhost:8070"
-        db = "pelotazo"
-        username = "admin"
+        db = "manus_odoo-bd"
+        username = "yo@mail.com"
         password = "admin"
         
         # Autenticación
@@ -628,8 +628,8 @@ async def create_provider(provider_data: dict, current_user: User = Depends(get_
         
         # Configuración de conexión a Odoo
         url = "http://localhost:8070"
-        db = "pelotazo"
-        username = "admin"
+        db = "manus_odoo-bd"
+        username = "yo@mail.com"
         password = "admin"
         
         # Autenticación
@@ -735,8 +735,8 @@ async def create_product(product_data: dict, current_user: User = Depends(get_cu
         
         # Configuración de conexión a Odoo
         url = "http://localhost:8070"
-        db = "pelotazo"
-        username = "admin"
+        db = "manus_odoo-bd"
+        username = "yo@mail.com"
         password = "admin"
         
         # Autenticación
@@ -840,8 +840,8 @@ async def update_product(product_id: int, product_data: dict, current_user: User
         
         # Configuración de conexión a Odoo
         url = "http://localhost:8070"
-        db = "pelotazo"
-        username = "admin"
+        db = "manus_odoo-bd"
+        username = "yo@mail.com"
         password = "admin"
         
         # Autenticación
@@ -956,8 +956,8 @@ async def delete_product(product_id: int, current_user: User = Depends(get_curre
         
         # Configuración de conexión a Odoo
         url = "http://localhost:8070"
-        db = "pelotazo"
-        username = "admin"
+        db = "manus_odoo-bd"
+        username = "yo@mail.com"
         password = "admin"
         
         # Autenticación
@@ -1005,8 +1005,8 @@ async def get_dashboard_stats(current_user: User = Depends(get_current_active_us
         
         # Configuración de conexión a Odoo
         url = "http://localhost:8070"
-        db = "pelotazo"
-        username = "admin"
+        db = "manus_odoo-bd"
+        username = "yo@mail.com"
         password = "admin"
         
         # Autenticación

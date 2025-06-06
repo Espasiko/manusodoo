@@ -25,56 +25,16 @@ const Providers: React.FC = () => {
       // Obtener datos de Odoo
       const providersData = await odooService.getProviders();
       
-      // Si no hay datos del backend, usar datos de ejemplo
       if (providersData && providersData.length > 0) {
         setProviders(providersData);
       } else {
-        // Datos de ejemplo como fallback
-        setProviders([
-          {
-            id: 1,
-            name: 'CECOTEC',
-            tax_calculation_method: 'recargo',
-            discount_type: 'volume',
-            payment_term: '30_days',
-            incentive_rules: 'Descuentos por volumen según tabla específica',
-            status: 'Activo',
-          },
-          {
-            id: 2,
-            name: 'BSH Electrodomésticos',
-            tax_calculation_method: 'standard',
-            discount_type: 'fixed',
-            payment_term: '60_days',
-            incentive_rules: 'Descuento fijo del 5% en pedidos superiores a 10.000€',
-            status: 'Activo',
-          },
-          {
-            id: 3,
-            name: 'JATA',
-            tax_calculation_method: 'standard',
-            discount_type: 'seasonal',
-            payment_term: '30_days',
-            incentive_rules: 'Promociones estacionales en pequeños electrodomésticos',
-            status: 'Activo',
-          },
-        ]);
+        setProviders([]);
+        message.error('No se pudieron obtener proveedores del backend.');
       }
     } catch (error) {
       console.error('Error fetching providers:', error);
       message.error('Error al cargar los proveedores');
-      // Usar datos de ejemplo en caso de error
-      setProviders([
-        {
-          id: 1,
-          name: 'CECOTEC',
-          tax_calculation_method: 'recargo',
-          discount_type: 'volume',
-          payment_term: '30_days',
-          incentive_rules: 'Descuentos por volumen según tabla específica',
-          status: 'Activo',
-        },
-      ]);
+      setProviders([]);
     } finally {
       setLoading(false);
     }
