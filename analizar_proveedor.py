@@ -58,7 +58,12 @@ def comparar_con_odoo(df_enriquecido):
     
     # Generar datos en formato Odoo
     try:
-        df_odoo = generar_product_template(df_enriquecido)
+        # Detectar el proveedor del DataFrame
+        proveedor = 'GENERICO'  # Por defecto
+        if 'proveedor' in df_enriquecido.columns and len(df_enriquecido) > 0:
+            proveedor = df_enriquecido['proveedor'].iloc[0]
+        
+        df_odoo = generar_product_template(df_enriquecido, proveedor)
         
         print(f"\nCampos generados para Odoo:")
         for columna in df_odoo.columns:

@@ -127,78 +127,78 @@ def procesar_almce(df):
 
 def procesar_bsh(df):
     """Procesa el formato específico de BSH"""
-    # Normalizar nombres de columnas a mayúsculas y sin espacios
-    df.columns = [col.upper().strip() if isinstance(col, str) else col for col in df.columns]
-    
-    # Mapeo flexible de nombres de columnas
-    columnas_esperadas = {
-        'CODIGO': ['CÓDIGO', 'CODIGO', 'COD', 'REFERENCE', 'REF'],
-        'DESCRIPCION': ['DESCRIPCIÓN', 'DESCRIPCION', 'NOMBRE', 'PRODUCT', 'DESIGNATION'],
-        'TOTAL': ['TOTAL', 'PRECIO', 'COSTE', 'PRICE'],
-        'PVP': ['P.V.P FINAL CLIENTE', 'PVP', 'PRECIO VENTA', 'SALES PRICE']
-    }
-    
-    # Encontrar las columnas reales en el DataFrame
-    columnas_reales = {}
-    columnas_disponibles = set(df.columns)
+    productos = []
+    categoria_actual = None
     
     # Imprimir columnas disponibles para diagnóstico
-    print("Columnas disponibles en el archivo:")
+    print("Columnas disponibles en el archivo BSH:")
     for col in df.columns:
-        print(f"- {col}")
+        print(f"- '{col}'")
     
-    for col_base, alternativas in columnas_esperadas.items():
-        encontrada = False
-        for alt in alternativas:
-            if alt in columnas_disponibles:
-                columnas_reales[col_base] = alt
-                encontrada = True
-                print(f"Columna {col_base} encontrada como: {alt}")
-                break
-        if not encontrada:
-            print(f"ADVERTENCIA: No se encontró la columna {col_base} o sus alternativas")
-            return None
+    # Recorrer filas para extraer categorías y productos
+    for idx, row in df.iterrows():
+        try:
+            codigo = row.get('CÓDIGO')
+            descripcion = row.get('DESCRIPCIÓN')
+            
+            # Verificar si es una fila de categoría (solo código sin descripción)
+            if pd.notna(codigo) and isinstance(codigo, str) and codigo.strip() and \
+               (pd.isna(descripcion) or not str(descripcion).strip() or str(descripcion).strip() == ''):
+                categoria_actual = codigo.strip()
+                print(f"Categoría detectada: {categoria_actual}")
+                continue
+            
+            # Si tiene código y descripción, es un producto
+            if pd.notna(codigo) and pd.notna(descripcion) and \
+               str(codigo).strip() and str(descripcion).strip():
+                
+                # Procesar precios con manejo de errores
+                try:
+                    total_col = row.get(' TOTAL ') or row.get('TOTAL')
+                    precio = None
+                    if pd.notna(total_col):
+                        precio_str = str(total_col).replace('€', '').replace(',', '.').strip()
+                        precio = pd.to_numeric(precio_str, errors='coerce')
+                except:
+                    precio = None
+                
+                try:
+                    pvp_col = row.get('P.V.P FINAL CLIENTE')
+                    precio_venta = None
+                    if pd.notna(pvp_col):
+                        pvp_str = str(pvp_col).replace('€', '').replace(',', '.').strip()
+                        precio_venta = pd.to_numeric(pvp_str, errors='coerce')
+                except:
+                    precio_venta = None
+                
+                # Crear producto
+                producto = {
+                    'codigo': str(codigo).strip(),
+                    'nombre': str(descripcion).strip(),
+                    'categoria': categoria_actual,
+                    'precio': precio,
+                    'precio_venta': precio_venta
+                }
+                
+                productos.append(producto)
+                print(f"Producto procesado: {codigo} - {descripcion[:30]}...")
+        
+        except Exception as e:
+            print(f"Error al procesar fila {idx}: {str(e)}")
+            continue
     
-    # Crear DataFrame normalizado con manejo de errores detallado
-    try:
-        productos = pd.DataFrame()
-        
-        # Procesar código
-        productos['codigo'] = df[columnas_reales['CODIGO']].astype(str).str.strip()
-        print(f"Procesados {len(productos)} códigos")
-        
-        # Procesar nombre
-        productos['nombre'] = df[columnas_reales['DESCRIPCION']].astype(str).str.strip()
-        
-        # Procesar precio con manejo de diferentes formatos
-        precio_str = df[columnas_reales['TOTAL']].astype(str)
-        precio_str = precio_str.str.replace(',', '.')
-        precio_str = precio_str.str.replace('€', '')
-        precio_str = precio_str.str.strip()
-        productos['precio'] = pd.to_numeric(precio_str, errors='coerce')
-        
-        # Procesar precio de venta
-        pvp_str = df[columnas_reales['PVP']].astype(str)
-        pvp_str = pvp_str.str.replace(',', '.')
-        pvp_str = pvp_str.str.replace('€', '')
-        pvp_str = pvp_str.str.strip()
-        productos['precio_venta'] = pd.to_numeric(pvp_str, errors='coerce')
-        
-        # Validar datos
-        productos = productos.replace([np.inf, -np.inf], np.nan)
-        if productos.isnull().any().any():
-            print("ADVERTENCIA: Se encontraron valores nulos o inválidos:")
-            print(productos.isnull().sum())
-        
-        return productos
-        
-    except Exception as e:
-        print(f"Error al procesar datos de BSH: {str(e)}")
-        print("Detalles del error:")
-        print(f"Tipo de error: {type(e).__name__}")
-        print(f"Columnas disponibles: {df.columns.tolist()}")
-        print(f"Columnas reales encontradas: {columnas_reales}")
-        return None
+    # Crear DataFrame y validar datos
+    df_productos = pd.DataFrame(productos)
+    
+    # Verificar datos procesados
+    print(f"\nTotal de productos BSH procesados: {len(df_productos)}")
+    if len(df_productos) > 0:
+        print("Columnas en el DataFrame resultante:")
+        print(df_productos.columns.tolist())
+        print("\nResumen de valores nulos:")
+        print(df_productos.isnull().sum())
+    
+    return df_productos
 
 def procesar_cecotec(df):
     """Procesa el formato específico de CECOTEC"""
@@ -297,9 +297,15 @@ def leer_archivo(ruta_archivo):
         if extension == '.csv':
             return pd.read_csv(ruta_archivo, encoding='utf-8')
         elif extension in ['.xlsx', '.xls']:
+            # Para BSH, el encabezado está en la fila 2 (índice 1)
+            if proveedor == 'BSH':
+                return pd.read_excel(ruta_archivo, sheet_name='BSH', header=1)
             # Para CECOTEC, sabemos que el encabezado está en la fila 1
-            if proveedor == 'CECOTEC':
+            elif proveedor == 'CECOTEC':
                 return pd.read_excel(ruta_archivo, header=1)
+            # Para ALMCE, usar la hoja VENDIDO con encabezado en fila 3 (índice 2)
+            elif proveedor == 'ALMCE':
+                return pd.read_excel(ruta_archivo, sheet_name='VENDIDO', header=2)
             else:
                 return pd.read_excel(ruta_archivo)
         else:
@@ -360,28 +366,72 @@ def generar_product_template(df, proveedor):
     return df_template
 
 def procesar_almce(df):
-    """Procesa el formato específico de ALMCE"""
-    # ALMCE tiene un formato especial donde las categorías son filas
-    # y los productos están debajo sin una estructura clara de columnas
+    """Procesa el formato específico de ALMCE desde la hoja VENDIDO"""
     productos = []
     categoria_actual = None
     
-    # Recorrer filas para extraer categorías y productos
-    for _, row in df.iterrows():
-        # Si la primera columna tiene un valor y las demás están vacías, es una categoría
-        if pd.notna(row.iloc[0]) and row.iloc[0].strip() and pd.isna(row.iloc[1:]).all():
-            categoria_actual = row.iloc[0].strip()
-        # Si hay un código en la primera columna y un nombre en la segunda, es un producto
-        elif pd.notna(row.iloc[0]) and pd.notna(row.iloc[1]) and row.iloc[0].strip():
-            productos.append({
-                'codigo': row.iloc[0].strip(),
-                'nombre': row.iloc[1].strip(),
-                'categoria': categoria_actual,
-                'precio': None,  # No disponible en este formato
-                'precio_venta': None  # No disponible en este formato
-            })
+    # Imprimir columnas disponibles para diagnóstico
+    print("Columnas disponibles en el archivo ALMCE:")
+    for col in df.columns:
+        print(f"- '{col}'")
     
-    return pd.DataFrame(productos)
+    # Recorrer filas para extraer productos
+    for idx, row in df.iterrows():
+        try:
+            codigo = row.get('CÓDIGO')
+            descripcion = row.get('DESCRIPCIÓN')
+            
+            # Si tiene código y descripción, es un producto
+            if pd.notna(codigo) and pd.notna(descripcion) and \
+               str(codigo).strip() and str(descripcion).strip():
+                
+                # Procesar precios con manejo de errores
+                try:
+                    precio_col = row.get('IMPORTE BRUTO')
+                    precio = None
+                    if pd.notna(precio_col):
+                        precio_str = str(precio_col).replace('€', '').replace(',', '.').strip()
+                        precio = pd.to_numeric(precio_str, errors='coerce')
+                except:
+                    precio = None
+                
+                try:
+                    pvp_col = row.get('P.V.P FINAL CLIENTE')
+                    precio_venta = None
+                    if pd.notna(pvp_col):
+                        pvp_str = str(pvp_col).replace('€', '').replace(',', '.').strip()
+                        precio_venta = pd.to_numeric(pvp_str, errors='coerce')
+                except:
+                    precio_venta = None
+                
+                # Crear producto
+                producto = {
+                    'codigo': str(codigo).strip(),
+                    'nombre': str(descripcion).strip(),
+                    'categoria': categoria_actual or 'ALMCE',
+                    'precio': precio,
+                    'precio_venta': precio_venta
+                }
+                
+                productos.append(producto)
+                print(f"Producto ALMCE procesado: {codigo} - {descripcion[:30]}...")
+        
+        except Exception as e:
+            print(f"Error al procesar fila ALMCE {idx}: {str(e)}")
+            continue
+    
+    # Crear DataFrame y validar datos
+    df_productos = pd.DataFrame(productos)
+    
+    # Verificar datos procesados
+    print(f"\nTotal de productos ALMCE procesados: {len(df_productos)}")
+    if len(df_productos) > 0:
+        print("Columnas en el DataFrame resultante:")
+        print(df_productos.columns.tolist())
+        print("\nResumen de valores nulos:")
+        print(df_productos.isnull().sum())
+    
+    return df_productos
 
 def procesar_bsh(df):
     """Procesa el formato específico de BSH"""
