@@ -1,0 +1,38 @@
+{
+    'name': 'Tema El Pelotazo',
+    'summary': 'Tema personalizado para la tienda online de El Pelotazo',
+    'description': """
+        Tema personalizado para la tienda online de El Pelotazo
+        Incluye estilos personalizados y diseños exclusivos.
+    """,
+    'version': '18.0.1.0.0',
+    'category': 'Theme/Ecommerce',
+    'depends': [
+        'website',
+        'website_sale',
+        'website_theme_install'
+    ],
+    'data': [
+        'views/assets.xml',
+        'views/layout.xml',
+        'views/snippets.xml',
+    ],
+    'demo': [],
+    'installable': True,
+    'application': False,
+    'auto_install': False,
+    'license': 'LGPL-3',
+    'assets': {
+        'web.assets_frontend': [
+            'theme_pelotazo/static/src/scss/theme.scss',
+            'theme_pelotazo/static/src/js/theme.js',
+        ],
+    },
+    'images': [
+        'static/description/banner.png',
+    ],
+    'snippet_lists': {
+        'homepage': 'theme_pelotazo.snippets',
+    },
+    'post_init_hook': '_theme_pelotazo_post_init',
+}

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Assets del tema usando ir.asset para Odoo 18 -->
+    
+    <record id="theme_pelotazo_assets_frontend" model="ir.asset">
+        <field name="name">Theme Pelotazo Frontend Assets</field>
+        <field name="bundle">web.assets_frontend</field>
+        <field name="path">theme_pelotazo/static/src/css/theme.css</field>
+    </record>
+    
+    <record id="theme_pelotazo_assets_frontend_js" model="ir.asset">
+        <field name="name">Theme Pelotazo Frontend JS</field>
+        <field name="bundle">web.assets_frontend</field>
+        <field name="path">theme_pelotazo/static/src/js/theme.js</field>
+    </record>
+    
+    <record id="theme_pelotazo_assets_editor" model="ir.asset">
+        <field name="name">Theme Pelotazo Editor Assets</field>
+        <field name="bundle">website.assets_editor</field>
+        <field name="path">theme_pelotazo/static/src/css/theme.css</field>
+    </record>
+</odoo>
