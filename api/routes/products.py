@@ -2,17 +2,17 @@ from fastapi import APIRouter, Depends, HTTPException, Query
 from typing import List, Optional
 
 from ..models.schemas import Product, User, PaginatedResponse
-from ..services.auth_service import auth_service
+from ..services.auth_service import auth_service, get_current_active_user
 from ..services.odoo_service import odoo_service
 from ..utils.config import config
 
 router = APIRouter(prefix="/api/v1", tags=["products"])
 
-@router.get("/products", response_model=PaginatedResponse[Product])
+@router.get("/products", response_model=PaginatedResponse)
 async def get_products(
     page: int = Query(1, ge=1),
     limit: int = Query(10, ge=1, le=100),
-    current_user: User = Depends(auth_service.get_current_active_user)
+    current_user: User = Depends(get_current_active_user)
 ):
     """Obtiene lista paginada de productos"""
     try:
@@ -38,7 +38,7 @@ async def get_products(
 @router.get("/products/{product_id}", response_model=Product)
 async def get_product(
     product_id: int,
-    current_user: User = Depends(auth_service.get_current_active_user)
+    current_user: User = Depends(get_current_active_user)
 ):
     """Obtiene un producto específico por ID"""
     try:
@@ -54,7 +54,7 @@ async def get_product(
 @router.post("/products", response_model=Product)
 async def create_product(
     product: Product,
-    current_user: User = Depends(auth_service.get_current_active_user)
+    current_user: User = Depends(get_current_active_user)
 ):
     """Crea un nuevo producto (simulado)"""
     # Por ahora retornamos el producto con un ID simulado
@@ -66,7 +66,7 @@ async def create_product(
 async def update_product(
     product_id: int,
     product: Product,
-    current_user: User = Depends(auth_service.get_current_active_user)
+    current_user: User = Depends(get_current_active_user)
 ):
     """Actualiza un producto existente (simulado)"""
     # Verificar que el producto existe
@@ -82,7 +82,7 @@ async def update_product(
 @router.delete("/products/{product_id}")
 async def delete_product(
     product_id: int,
-    current_user: User = Depends(auth_service.get_current_active_user)
+    current_user: User = Depends(get_current_active_user)
 ):
     """Elimina un producto (simulado)"""
     # Verificar que el producto existe

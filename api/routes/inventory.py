@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException, Query
 from typing import List
 
 from ..models.schemas import InventoryItem, User, PaginatedResponse
-from ..services.auth_service import auth_service
+from ..services.auth_service import auth_service, get_current_active_user
 
 router = APIRouter(prefix="/api/v1", tags=["inventory"])
 
@@ -15,11 +15,11 @@ fake_inventory_db = [
     InventoryItem(id=5, product_id=2, product_name="Lavadora LG F4WV5012S0W", quantity=15, location="Almacén C", last_updated="2024-01-11"),
 ]
 
-@router.get("/inventory", response_model=PaginatedResponse[InventoryItem])
+@router.get("/inventory", response_model=PaginatedResponse)
 async def get_inventory(
     page: int = Query(1, ge=1),
     limit: int = Query(10, ge=1, le=100),
-    current_user: User = Depends(auth_service.get_current_active_user)
+    current_user: User = Depends(get_current_active_user)
 ):
     """Obtiene lista paginada de inventario"""
     try:
@@ -42,7 +42,7 @@ async def get_inventory(
 @router.get("/inventory/{item_id}", response_model=InventoryItem)
 async def get_inventory_item(
     item_id: int,
-    current_user: User = Depends(auth_service.get_current_active_user)
+    current_user: User = Depends(get_current_active_user)
 ):
     """Obtiene un item de inventario específico por ID"""
     try:
@@ -58,7 +58,7 @@ async def get_inventory_item(
 @router.post("/inventory", response_model=InventoryItem)
 async def create_inventory_item(
     item: InventoryItem,
-    current_user: User = Depends(auth_service.get_current_active_user)
+    current_user: User = Depends(get_current_active_user)
 ):
     """Crea un nuevo item de inventario"""
     # Generar nuevo ID
@@ -71,7 +71,7 @@ async def create_inventory_item(
 async def update_inventory_item(
     item_id: int,
     item: InventoryItem,
-    current_user: User = Depends(auth_service.get_current_active_user)
+    current_user: User = Depends(get_current_active_user)
 ):
     """Actualiza un item de inventario existente"""
     # Buscar el item existente
@@ -87,7 +87,7 @@ async def update_inventory_item(
 @router.delete("/inventory/{item_id}")
 async def delete_inventory_item(
     item_id: int,
-    current_user: User = Depends(auth_service.get_current_active_user)
+    current_user: User = Depends(get_current_active_user)
 ):
     """Elimina un item de inventario"""
     # Buscar el item existente

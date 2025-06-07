@@ -4,7 +4,7 @@ from datetime import timedelta
 from typing import Dict, Any
 
 from ..models.schemas import Token, User, SessionResponse
-from ..services.auth_service import auth_service, fake_users_db
+from ..services.auth_service import auth_service, fake_users_db, get_current_active_user
 from ..utils.config import config
 
 router = APIRouter(prefix="", tags=["authentication"])
@@ -26,7 +26,7 @@ async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(
     return {"access_token": access_token, "token_type": "bearer"}
 
 @router.get("/api/v1/auth/session", response_model=SessionResponse)
-async def get_session(current_user: User = Depends(auth_service.get_current_active_user)):
+async def get_session(current_user: User = Depends(get_current_active_user)):
     """Obtiene información de la sesión actual"""
     return SessionResponse(
         uid=1,

@@ -2,16 +2,16 @@ from fastapi import APIRouter, Depends, HTTPException, Query
 from typing import List
 
 from ..models.schemas import Provider, User, PaginatedResponse
-from ..services.auth_service import auth_service
+from ..services.auth_service import auth_service, get_current_active_user
 from ..services.odoo_service import odoo_service
 
 router = APIRouter(prefix="/api/v1", tags=["providers"])
 
-@router.get("/providers", response_model=PaginatedResponse[Provider])
+@router.get("/providers", response_model=PaginatedResponse)
 async def get_providers(
     page: int = Query(1, ge=1),
     limit: int = Query(10, ge=1, le=100),
-    current_user: User = Depends(auth_service.get_current_active_user)
+    current_user: User = Depends(get_current_active_user)
 ):
     """Obtiene lista paginada de proveedores"""
     try:
@@ -37,7 +37,7 @@ async def get_providers(
 @router.get("/providers/{provider_id}", response_model=Provider)
 async def get_provider(
     provider_id: int,
-    current_user: User = Depends(auth_service.get_current_active_user)
+    current_user: User = Depends(get_current_active_user)
 ):
     """Obtiene un proveedor específico por ID"""
     try:
@@ -54,7 +54,7 @@ async def get_provider(
 @router.post("/providers", response_model=Provider)
 async def create_provider(
     provider: Provider,
-    current_user: User = Depends(auth_service.get_current_active_user)
+    current_user: User = Depends(get_current_active_user)
 ):
     """Crea un nuevo proveedor (simulado)"""
     # Por ahora retornamos el proveedor con un ID simulado
@@ -66,7 +66,7 @@ async def create_provider(
 async def update_provider(
     provider_id: int,
     provider: Provider,
-    current_user: User = Depends(auth_service.get_current_active_user)
+    current_user: User = Depends(get_current_active_user)
 ):
     """Actualiza un proveedor existente (simulado)"""
     # Verificar que el proveedor existe
@@ -83,7 +83,7 @@ async def update_provider(
 @router.delete("/providers/{provider_id}")
 async def delete_provider(
     provider_id: int,
-    current_user: User = Depends(auth_service.get_current_active_user)
+    current_user: User = Depends(get_current_active_user)
 ):
     """Elimina un proveedor (simulado)"""
     # Verificar que el proveedor existe

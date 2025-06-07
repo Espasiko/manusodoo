@@ -60,7 +60,7 @@ class OdooService {
   private isAuthenticated: boolean = false;
 
   constructor() {
-    this.apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8001';
+    this.apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8000';
     this.token = localStorage.getItem('token') || '';
     this.refreshToken = localStorage.getItem('refreshToken') || '';
   }

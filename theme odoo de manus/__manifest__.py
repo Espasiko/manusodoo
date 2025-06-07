@@ -1,0 +1,40 @@
+{
+    'name': 'Theme Pelotazo',
+    'description': 'Theme personalizado para El Pelotazo Electrohogar',
+    'version': '1.0',
+    'category': 'Theme/Retail',
+    'sequence': 1000,
+    'author': 'Manus AI',
+    'website': 'https://elpelotazoelectrohogar.com',
+    'summary': 'Theme personalizado para tienda de electrodomésticos',
+    'depends': [
+        'website',
+        'website_theme_install',
+        'website_sale',
+        'website_sale_comparison',
+        'website_sale_wishlist',
+    ],
+    'data': [
+        'data/theme_data.xml',
+        'views/assets.xml',
+        'views/layout.xml',
+        'views/pages/shop.xml',
+        'views/pages/product.xml',
+        'views/snippets/snippets.xml',
+        'views/templates/header.xml',
+        'views/templates/footer.xml',
+    ],
+    'assets': {
+        'web.assets_frontend': [
+            'theme_pelotazo/static/src/js/shop.js',
+        ],
+    },
+    'images': [
+        'static/description/theme_screenshot.jpg',
+        'static/description/icon.png',
+    ],
+    'license': 'LGPL-3',
+    'application': False,
+    'installable': True,
+    'auto_install': False,
+}

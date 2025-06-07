@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Datos del theme -->
+        <record id="theme_pelotazo.theme_data" model="theme.ir.ui.view">
+            <field name="name">Theme Pelotazo Data</field>
+            <field name="key">theme_pelotazo.theme_data</field>
+            <field name="type">qweb</field>
+            <field name="arch" type="xml">
+                <data>
+                    <!-- Colores del theme -->
+                    <color name="primary" string="Rojo Principal">#FF0000</color>
+                    <color name="secondary" string="Gris Medio">#CCCCCC</color>
+                    <color name="alpha" string="Blanco">#FFFFFF</color>
+                    <color name="beta" string="Negro">#000000</color>
+                    <color name="gamma" string="Gris Claro">#F5F5F5</color>
+                    
+                    <!-- Fuentes del theme -->
+                    <font name="Montserrat" family="'Montserrat', sans-serif" title="Montserrat" url="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700&amp;display=swap"/>
+                    <font name="Open Sans" family="'Open Sans', sans-serif" title="Open Sans" url="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600;700&amp;display=swap"/>
+                </data>
+            </field>
+        </record>
+    </data>
+</odoo>

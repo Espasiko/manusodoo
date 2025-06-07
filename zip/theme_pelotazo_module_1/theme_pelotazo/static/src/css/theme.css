@@ -1,0 +1,22 @@
+/* Theme Pelotazo CSS */
+.logo-text {
+    font-weight: bold;
+    font-size: 1.5rem;
+    color: #333;
+}
+
+/* Banner section styles */
+.s_banner {
+    padding: 100px 0;
+    background-color: #f5f5f5;
+    text-align: center;
+}
+
+.s_banner h1 {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+}
+
+.s_banner .lead {
+    font-size: 1.5rem;
+}

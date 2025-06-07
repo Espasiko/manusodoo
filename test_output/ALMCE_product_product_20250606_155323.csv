@@ -1,0 +1,2 @@
+id,product_tmpl_id,default_code,name,lst_price,standard_price,type,active,available_in_pos,to_weight,is_published,categ_id,pos_categ_ids,product_tag_ids,taxes_id,supplier_taxes_id,product_template_attribute_value_ids,product_template_variant_value_ids
+product_product_5ºCAMION,product_template_5ºCAMION,5ºCAMION,ECLACSM6520,,,product,True,True,False,True,All / Saleable,All / Saleable / PoS,tag_almce,IVA 21% (Ventas),IVA 21% (Compras),,

@@ -81,12 +81,15 @@ class AuthService:
             raise credentials_exception
         return user
     
-    @classmethod
-    async def get_current_active_user(cls, current_user: User = Depends(get_current_user)) -> User:
-        """Obtiene el usuario actual activo"""
-        if current_user.disabled:
-            raise HTTPException(status_code=400, detail="Inactive user")
-        return current_user
+# Wrapper para que FastAPI pueda usar correctamente get_current_user como dependencia
+async def get_current_user_dep(token: str = Depends(oauth2_scheme)):
+    return await AuthService.get_current_user(token)
+
+# Función global para obtener el usuario activo
+async def get_current_active_user(current_user: User = Depends(get_current_user_dep)) -> User:
+    if current_user.disabled:
+        raise HTTPException(status_code=400, detail="Inactive user")
+    return current_user
     
     @staticmethod
     def generate_session_id() -> str:

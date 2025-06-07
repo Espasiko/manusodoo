@@ -1,0 +1,2 @@
+id,name,default_code,list_price,standard_price,type,sale_ok,purchase_ok,active,available_in_pos,to_weight,is_published,website_sequence,categ_id,supplier_id,product_tag_ids,public_categ_ids,pos_categ_ids,taxes_id,supplier_taxes_id,description_sale,description_purchase
+product_template_5ºCAMION,ECLACSM6520,5ºCAMION,,,product,True,True,True,True,False,True,10,All/Saleable/Electrodomésticos,res_partner_almce,tag_almce,Electrodomésticos/ALMCE,Electrodomésticos,account_tax_sale_21,account_tax_purchase_21,Producto ECLACSM6520 para venta,Producto ECLACSM6520 para compra

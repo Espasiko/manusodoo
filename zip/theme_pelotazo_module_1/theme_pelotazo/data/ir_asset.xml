@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Proper Odoo 18 assets registration -->
+    <record id="theme_pelotazo_assets_frontend_css" model="ir.asset">
+        <field name="name">theme_pelotazo frontend css</field>
+        <field name="bundle">web.assets_frontend</field>
+        <field name="path">/theme_pelotazo/static/src/css/theme.css</field>
+    </record>
+    
+    <record id="theme_pelotazo_assets_frontend_js" model="ir.asset">
+        <field name="name">theme_pelotazo frontend js</field>
+        <field name="bundle">web.assets_frontend</field>
+        <field name="path">/theme_pelotazo/static/src/js/theme.js</field>
+    </record>
+</odoo>

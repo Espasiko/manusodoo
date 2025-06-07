@@ -48,16 +48,16 @@ class ProductUpdate(BaseModel):
 class InventoryItem(BaseModel):
     id: int
     product_id: int
-    product: str
-    code: str
+    product: Optional[str] = None
+    code: Optional[str] = None
     location: str
     quantity: int
-    reserved: int
+    reserved: Optional[int] = None
 
 class Sale(BaseModel):
     id: int
-    reference: str
-    customer: str
+    reference: Optional[str] = None
+    customer: Optional[str] = None
     date: str
     total: float
     status: str
@@ -74,9 +74,11 @@ class Customer(BaseModel):
     name: str
     email: str
     phone: str
-    city: str
-    country: str
-    status: str
+    address: str
+    total_purchases: float
+    city: Optional[str] = None
+    country: Optional[str] = None
+    status: Optional[str] = None
 
 class CustomerCreate(BaseModel):
     name: str

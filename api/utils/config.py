@@ -22,8 +22,8 @@ class Config:
     
     # Configuración de Odoo
     ODOO_URL: str = os.getenv("ODOO_URL", "http://localhost:8070")
-    ODOO_DB: str = os.getenv("ODOO_DB", "manus_odoo-bd")
-    ODOO_USERNAME: str = os.getenv("ODOO_USERNAME", "yo@mail.com")
+    ODOO_DB: str = os.getenv("ODOO_DB", "postgres")
+    ODOO_USERNAME: str = os.getenv("ODOO_USERNAME", "admin")
     ODOO_PASSWORD: str = os.getenv("ODOO_PASSWORD", "admin")
     
     # Configuración de paginación

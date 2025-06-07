@@ -2,13 +2,13 @@ from fastapi import APIRouter, Depends, HTTPException
 from typing import Dict, Any
 
 from ..models.schemas import DashboardStats, User
-from ..services.auth_service import auth_service
+from ..services.auth_service import auth_service, get_current_active_user
 
 router = APIRouter(prefix="/api/v1", tags=["dashboard"])
 
 @router.get("/dashboard/stats", response_model=DashboardStats)
 async def get_dashboard_stats(
-    current_user: User = Depends(auth_service.get_current_active_user)
+    current_user: User = Depends(get_current_active_user)
 ):
     """Obtiene estadísticas del dashboard"""
     try:
@@ -53,7 +53,7 @@ async def get_dashboard_stats(
 
 @router.get("/dashboard/categories")
 async def get_categories(
-    current_user: User = Depends(auth_service.get_current_active_user)
+    current_user: User = Depends(get_current_active_user)
 ):
     """Obtiene categorías de productos"""
     try:

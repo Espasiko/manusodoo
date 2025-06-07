@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException, Query
 from typing import List
 
 from ..models.schemas import Sale, User, PaginatedResponse
-from ..services.auth_service import auth_service
+from ..services.auth_service import auth_service, get_current_active_user
 
 router = APIRouter(prefix="/api/v1", tags=["sales"])
 
@@ -15,11 +15,11 @@ fake_sales_db = [
     Sale(id=5, customer_id=4, customer_name="Ana Martínez", product_id=1, product_name="Refrigerador Samsung RT38K5982BS", quantity=1, unit_price=899.99, total=899.99, date="2024-01-11", status="cancelled"),
 ]
 
-@router.get("/sales", response_model=PaginatedResponse[Sale])
+@router.get("/sales", response_model=PaginatedResponse)
 async def get_sales(
     page: int = Query(1, ge=1),
     limit: int = Query(10, ge=1, le=100),
-    current_user: User = Depends(auth_service.get_current_active_user)
+    current_user: User = Depends(get_current_active_user)
 ):
     """Obtiene lista paginada de ventas"""
     try:
@@ -42,7 +42,7 @@ async def get_sales(
 @router.get("/sales/{sale_id}", response_model=Sale)
 async def get_sale(
     sale_id: int,
-    current_user: User = Depends(auth_service.get_current_active_user)
+    current_user: User = Depends(get_current_active_user)
 ):
     """Obtiene una venta específica por ID"""
     try:
@@ -58,7 +58,7 @@ async def get_sale(
 @router.post("/sales", response_model=Sale)
 async def create_sale(
     sale: Sale,
-    current_user: User = Depends(auth_service.get_current_active_user)
+    current_user: User = Depends(get_current_active_user)
 ):
     """Crea una nueva venta"""
     # Generar nuevo ID
@@ -71,7 +71,7 @@ async def create_sale(
 async def update_sale(
     sale_id: int,
     sale: Sale,
-    current_user: User = Depends(auth_service.get_current_active_user)
+    current_user: User = Depends(get_current_active_user)
 ):
     """Actualiza una venta existente"""
     # Buscar la venta existente
@@ -87,7 +87,7 @@ async def update_sale(
 @router.delete("/sales/{sale_id}")
 async def delete_sale(
     sale_id: int,
-    current_user: User = Depends(auth_service.get_current_active_user)
+    current_user: User = Depends(get_current_active_user)
 ):
     """Elimina una venta"""
     # Buscar la venta existente
