@@ -1,0 +1,1 @@
+{"title": "Problema: Código acoplado y poco modular", "tags": ["problema_codigo", "acoplamiento"], "content": "El código backend y frontend estaba muy acoplado y poco modular, dificultando el mantenimiento y la escalabilidad."}

@@ -1,0 +1,1 @@
+{"title": "Problema: Fallback de datos fake en frontend", "tags": ["problema_frontend", "datos_fake"], "content": "El frontend mostraba datos de ejemplo (fake) en productos y proveedores si fallaba la API, ocultando errores reales y dificultando el debug."}

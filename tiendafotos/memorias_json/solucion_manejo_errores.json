@@ -1,0 +1,1 @@
+{"title": "Solución: Manejo de errores mejorado", "tags": ["solucion_frontend", "manejo_errores"], "content": "Mejorado el manejo de errores: si la API falla, se muestra lista vacía y mensaje claro. Esto facilita la detección de problemas reales de integración."}

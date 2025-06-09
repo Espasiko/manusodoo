@@ -1,0 +1,1 @@
+{"title": "Solución: Eliminación de datos fake en React", "tags": ["solucion_frontend", "datos_fake"], "content": "Eliminados todos los datos de ejemplo en React, ahora solo se muestran datos reales de Odoo. Esto permite detectar errores reales de integración y depurar correctamente."}

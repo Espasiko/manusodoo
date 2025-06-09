@@ -1,0 +1,1 @@
+{"title": "Problema: Configuración incorrecta de conexión Odoo en backend", "tags": ["problema_backend", "conexion_odoo"], "content": "El backend FastAPI usaba configuración incorrecta para conectar a Odoo (base de datos y usuario erróneos). Esto provocaba errores de autenticación y datos inconsistentes."}

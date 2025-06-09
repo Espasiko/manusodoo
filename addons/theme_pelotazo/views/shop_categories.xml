@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Template para categorías de productos con imágenes -->
+    <template id="product_categories_section" name="Product Categories Section">
+        <section class="featured-categories py-5">
+            <div class="container">
+                <div class="section-title text-center mb-5">
+                    <h2 class="display-4 font-weight-bold text-dark mb-3">Nuestras Categorías</h2>
+                    <p class="lead text-muted">Encuentra exactamente lo que necesitas navegando por nuestras categorías especializadas</p>
+                </div>
+                
+                <div class="category-grid">
+                    <!-- Categoría Lavado y Secado -->
+                    <div class="category-card hover-lift">
+                        <div class="category-image">
+                            <img src="/theme_pelotazo/static/src/img/categories/lavado_secado.webp" alt="Lavado y Secado" class="img-fluid"/>
+                            <div class="category-overlay">
+                                <i class="fa fa-tint category-icon"></i>
+                            </div>
+                        </div>
+                        <div class="category-content">
+                            <h3 class="category-title">Lavado y Secado</h3>
+                            <p class="category-description">Lavadoras, secadoras y lavasecadoras</p>
+                            <span class="category-count">120+ productos</span>
+                            <div class="mt-3">
+                                <a href="/shop/category/lavado-secado" class="btn btn-primary btn-sm">Ver Productos</a>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Categoría Refrigeración -->
+                    <div class="category-card hover-lift">
+                        <div class="category-image">
+                            <img src="/theme_pelotazo/static/src/img/categories/refrigeracion.webp" alt="Refrigeración" class="img-fluid"/>
+                            <div class="category-overlay">
+                                <i class="fa fa-snowflake-o category-icon"></i>
+                            </div>
+                        </div>
+                        <div class="category-content">
+                            <h3 class="category-title">Refrigeración</h3>
+                            <p class="category-description">Frigoríficos, congeladores y combis</p>
+                            <span class="category-count">180+ productos</span>
+                            <div class="mt-3">
+                                <a href="/shop/category/refrigeracion" class="btn btn-primary btn-sm">Ver Productos</a>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Categoría Cocina -->
+                    <div class="category-card hover-lift">
+                        <div class="category-image">
+                            <img src="/theme_pelotazo/static/src/img/categories/cocina.webp" alt="Cocina" class="img-fluid"/>
+                            <div class="category-overlay">
+                                <i class="fa fa-fire category-icon"></i>
+                            </div>
+                        </div>
+                        <div class="category-content">
+                            <h3 class="category-title">Cocina</h3>
+                            <p class="category-description">Hornos, placas, campanas y lavavajillas</p>
+                            <span class="category-count">200+ productos</span>
+                            <div class="mt-3">
+                                <a href="/shop/category/cocina" class="btn btn-primary btn-sm">Ver Productos</a>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Categoría Pequeños Electrodomésticos -->
+                    <div class="category-card hover-lift">
+                        <div class="category-image">
+                            <img src="/theme_pelotazo/static/src/img/categories/pequenos_electrodomesticos.webp" alt="Pequeños Electrodomésticos" class="img-fluid"/>
+                            <div class="category-overlay">
+                                <i class="fa fa-coffee category-icon"></i>
+                            </div>
+                        </div>
+                        <div class="category-content">
+                            <h3 class="category-title">Pequeños Electrodomésticos</h3>
+                            <p class="category-description">Robots, cafeteras, microondas y más</p>
+                            <span class="category-count">150+ productos</span>
+                            <div class="mt-3">
+                                <a href="/shop/category/pequenos-electrodomesticos" class="btn btn-primary btn-sm">Ver Productos</a>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Categoría Televisión y Audio -->
+                    <div class="category-card hover-lift">
+                        <div class="category-image">
+                            <img src="/theme_pelotazo/static/src/img/categories/television_audio.webp" alt="Televisión y Audio" class="img-fluid"/>
+                            <div class="category-overlay">
+                                <i class="fa fa-tv category-icon"></i>
+                            </div>
+                        </div>
+                        <div class="category-content">
+                            <h3 class="category-title">Televisión y Audio</h3>
+                            <p class="category-description">Televisores y equipos de sonido</p>
+                            <span class="category-count">80+ productos</span>
+                            <div class="mt-3">
+                                <a href="/shop/category/television-audio" class="btn btn-primary btn-sm">Ver Productos</a>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Categoría Climatización -->
+                    <div class="category-card hover-lift">
+                        <div class="category-image">
+                            <img src="/theme_pelotazo/static/src/img/categories/climatizacion.webp" alt="Climatización" class="img-fluid"/>
+                            <div class="category-overlay">
+                                <i class="fa fa-thermometer-half category-icon"></i>
+                            </div>
+                        </div>
+                        <div class="category-content">
+                            <h3 class="category-title">Climatización</h3>
+                            <p class="category-description">Aire acondicionado, calefactores y ventiladores</p>
+                            <span class="category-count">90+ productos</span>
+                            <div class="mt-3">
+                                <a href="/shop/category/climatizacion" class="btn btn-primary btn-sm">Ver Productos</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </template>
+    
+    <!-- Snippet para el editor de website -->
+    <template id="s_product_categories" name="Product Categories Grid">
+        <t t-call="theme_pelotazo.product_categories_section"/>
+    </template>
+    
+    <!-- Agregar el snippet a la lista de snippets disponibles -->
+    <template id="product_categories_snippet" inherit_id="website.snippets" name="Product Categories Snippet" priority="9">
+        <xpath expr="//snippets[@id='snippet_structure']" position="inside">
+            <t t-snippet="theme_pelotazo.s_product_categories" t-thumbnail="/theme_pelotazo/static/src/img/snippets/s_categories.jpg"/>
+        </xpath>
+    </template>
+    
+    <!-- Template para integrar en la página de shop -->
+    <template id="shop_categories_header" inherit_id="website_sale.products" name="Shop Categories Header">
+        <xpath expr="//div[@id='products_grid_before']" position="before">
+            <t t-call="theme_pelotazo.product_categories_section"/>
+        </xpath>
+    </template>
+</odoo>

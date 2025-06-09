@@ -1,0 +1,1 @@
+{"title": "Solución: Configuración XML-RPC corregida", "tags": ["solucion_backend", "conexion_odoo"], "content": "Corregida la configuración XML-RPC del backend para usar la BD real 'manus_odoo-bd' y usuario 'yo@mail.com' con contraseña 'admin'. Esto resolvió los problemas de autenticación y permitió operar con datos reales."}

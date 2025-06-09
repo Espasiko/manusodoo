@@ -1,0 +1,1 @@
+{"title": "Problema: Errores 401 JWT en frontend", "tags": ["problema_frontend", "jwt"], "content": "El frontend presentaba errores 401 por JWT inválido o mal gestionado, lo que impedía la comunicación segura con el backend."}
