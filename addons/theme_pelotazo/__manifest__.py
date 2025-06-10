@@ -12,6 +12,7 @@
     'data': [
         'views/templates.xml',
         'views/snippets.xml',
+        'views/shop_categories.xml',
     ],
     'assets': {
         'web.assets_frontend': [

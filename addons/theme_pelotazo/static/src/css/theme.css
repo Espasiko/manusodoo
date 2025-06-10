@@ -153,20 +153,7 @@ a:hover {
     border-bottom: 1px solid rgba(0, 0, 0, 0.08);
 }
 
-/* Banner superior distintivo */
-#top::before {
-    content: "🏀 TEMA PELOTAZO ELECTROHOGAR 🏀";
-    display: block;
-    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-    color: white;
-    text-align: center;
-    padding: 8px 0;
-    font-size: 0.75rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    animation: pulse 3s infinite;
-}
+/* Banner superior distintivo - Eliminado */
 
 /* Navbar principal */
 .navbar {
@@ -578,10 +565,6 @@ a:hover {
 }
 
 /* Animaciones y efectos */
-@keyframes pulse {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.8; }
-}
 
 @keyframes fadeInUp {
     from {
@@ -707,4 +690,218 @@ a:hover {
     
     h1 { font-size: 2rem; }
     h2 { font-size: 1.6rem; }
+}
+
+/* ===== ESTILOS PARA CATEGORÍAS DE PRODUCTOS ===== */
+.featured-categories {
+    background: #fafafa;
+    position: relative;
+}
+
+.featured-categories .section-title {
+    margin-bottom: 3rem;
+}
+
+.featured-categories .section-title h2 {
+    color: var(--dark);
+    font-weight: 700;
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+    position: relative;
+}
+
+.featured-categories .section-title h2::after {
+    content: '';
+    position: absolute;
+    bottom: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60px;
+    height: 4px;
+    background: linear-gradient(90deg, var(--primary), var(--primary-light));
+    border-radius: 2px;
+}
+
+.featured-categories .section-title p {
+    font-size: 1.1rem;
+    color: var(--gray);
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+/* Grid de categorías */
+.category-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+    margin-top: 2rem;
+}
+
+/* Tarjetas de categoría */
+.category-card {
+    background: white;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    border: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.category-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+}
+
+/* Imagen de categoría */
+.category-image {
+    position: relative;
+    height: 200px;
+    overflow: hidden;
+    background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+}
+
+.category-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.4s ease;
+}
+
+.category-card:hover .category-image img {
+    transform: scale(1.1);
+}
+
+/* Overlay con icono */
+.category-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, rgba(227, 6, 19, 0.8), rgba(227, 6, 19, 0.6));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: all 0.3s ease;
+}
+
+.category-card:hover .category-overlay {
+    opacity: 1;
+}
+
+.category-icon {
+    font-size: 3rem;
+    color: white;
+    transform: scale(0.8);
+    transition: transform 0.3s ease;
+}
+
+.category-card:hover .category-icon {
+    transform: scale(1);
+}
+
+/* Contenido de categoría */
+.category-content {
+    padding: 1.5rem;
+    text-align: center;
+}
+
+.category-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--dark);
+    margin-bottom: 0.5rem;
+    line-height: 1.3;
+}
+
+.category-description {
+    color: var(--gray);
+    font-size: 0.95rem;
+    margin-bottom: 0.75rem;
+    line-height: 1.4;
+}
+
+.category-count {
+    display: inline-block;
+    background: rgba(227, 6, 19, 0.1);
+    color: var(--primary);
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    margin-bottom: 1rem;
+}
+
+/* Botón de categoría */
+.category-content .btn {
+    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+    border: none;
+    color: white;
+    padding: 0.5rem 1.5rem;
+    border-radius: 25px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(227, 6, 19, 0.3);
+}
+
+.category-content .btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(227, 6, 19, 0.4);
+    background: linear-gradient(135deg, var(--primary-dark), var(--primary));
+}
+
+/* Efecto hover-lift */
+.hover-lift {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.hover-lift:hover {
+    transform: translateY(-5px);
+}
+
+/* Responsive para categorías */
+@media (max-width: 768px) {
+    .category-grid {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+    }
+    
+    .featured-categories {
+        padding: 3rem 0;
+    }
+    
+    .featured-categories .section-title h2 {
+        font-size: 2rem;
+    }
+    
+    .category-image {
+        height: 180px;
+    }
+    
+    .category-content {
+        padding: 1.25rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .category-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .featured-categories {
+        padding: 2rem 0;
+    }
+    
+    .featured-categories .section-title h2 {
+        font-size: 1.75rem;
+    }
+    
+    .category-image {
+        height: 160px;
+    }
 }

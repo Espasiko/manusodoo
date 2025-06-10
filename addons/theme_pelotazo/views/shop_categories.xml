@@ -136,7 +136,7 @@
     
     <!-- Template para integrar en la página de shop -->
     <template id="shop_categories_header" inherit_id="website_sale.products" name="Shop Categories Header">
-        <xpath expr="//div[@id='products_grid_before']" position="before">
+        <xpath expr="//div[hasclass('o_wsale_products_main_row')]" position="before">
             <t t-call="theme_pelotazo.product_categories_section"/>
         </xpath>
     </template>
