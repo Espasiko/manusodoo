@@ -110,27 +110,18 @@
         </xpath>
     </template>
     
-    <!-- Template para integrar la barra lateral en la página de shop -->
+    <!-- Integración de la barra lateral en la página de la tienda -->
     <template id="shop_categories_sidebar_integration" inherit_id="website_sale.products" name="Shop Categories Sidebar">
-        <xpath expr="//div[hasclass('o_wsale_products_main_row')]" position="replace">
-            <div class="o_wsale_products_main_row row">
-                <!-- Barra lateral de categorías -->
-                <div class="col-lg-3 col-md-4 d-none d-md-block">
-                    <t t-call="theme_pelotazo.product_categories_sidebar"/>
-                </div>
-                
-                <!-- Contenido principal de productos -->
-                <div class="col-lg-9 col-md-8 col-12">
-                    <div class="o_wsale_products_grid_table_wrapper">
-                        <table class="table table-borderless table-sm o_wsale_products_grid_table">
-                            <tbody>
-                                <tr t-foreach="bins" t-as="tr_product" class="o_wsale_product_grid_wrapper">
-                                    <td t-foreach="tr_product" t-as="product" class="oe_product o_wsale_product_grid_item" t-att-data-publish="product.website_published and 'on' or 'off'">
-                                        <t t-call="website_sale.products_item"/>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
+        <xpath expr="//div[hasclass('oe_website_sale')]" position="inside">
+            <div class="container-fluid mt-3">
+                <div class="row">
+                    <div class="col-lg-3 d-none d-lg-block">
+                        <t t-call="theme_pelotazo.product_categories_sidebar"/>
+                    </div>
+                    <div class="col-lg-9">
+                        <div class="categories-sidebar d-lg-none">
+                            <t t-call="theme_pelotazo.product_categories_sidebar"/>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -139,15 +130,12 @@
     
     <!-- Botón de categorías para móviles -->
     <template id="mobile_categories_toggle" inherit_id="website_sale.products" name="Mobile Categories Toggle">
-        <xpath expr="//div[hasclass('o_wsale_products_searchbar_form')]" position="after">
+        <xpath expr="//div[@id='products_grid_before']" position="inside">
             <div class="d-md-none mb-3">
-                <button class="btn btn-outline-primary btn-sm w-100" type="button" data-bs-toggle="collapse" data-bs-target="#mobileCategoriesCollapse" aria-expanded="false" aria-controls="mobileCategoriesCollapse">
-                    <i class="fa fa-th-large me-2"></i>
-                    Ver Categorías
+                <button class="categories-toggle" type="button">
+                    <i class="fa fa-th-large"></i>
+                    <span class="btn-text">Ver Categorías</span>
                 </button>
-                <div class="collapse mt-2" id="mobileCategoriesCollapse">
-                    <t t-call="theme_pelotazo.product_categories_sidebar"/>
-                </div>
             </div>
         </xpath>
     </template>

@@ -8,7 +8,8 @@
 
     // Esperar a que el DOM esté cargado
     document.addEventListener('DOMContentLoaded', function() {
-        initCategoriesToggle();
+        // Dar tiempo a Odoo para renderizar completamente
+        setTimeout(initCategoriesToggle, 500);
     });
 
     /**
@@ -19,8 +20,13 @@
         const sidebar = document.querySelector('.categories-sidebar');
         
         if (!toggleBtn || !sidebar) {
+            console.log('Elementos de categorías no encontrados, reintentando...');
+            // Reintentar después de un tiempo
+            setTimeout(initCategoriesToggle, 1000);
             return;
         }
+
+        console.log('Inicializando toggle de categorías');
 
         // Manejar click en el botón toggle
         toggleBtn.addEventListener('click', function() {
@@ -29,7 +35,7 @@
 
         // Cerrar sidebar al hacer click fuera en móviles
         document.addEventListener('click', function(e) {
-            if (window.innerWidth <= 768) {
+            if (window.innerWidth <= 992) { // Cambiado a 992px para coincidir con Bootstrap lg
                 if (!sidebar.contains(e.target) && !toggleBtn.contains(e.target)) {
                     closeCategories(toggleBtn, sidebar);
                 }
