@@ -692,180 +692,200 @@ a:hover {
     h2 { font-size: 1.6rem; }
 }
 
-/* ===== ESTILOS PARA CATEGORÍAS DE PRODUCTOS ===== */
-.featured-categories {
-    background: #fafafa;
-    position: relative;
-}
-
-.featured-categories .section-title {
-    margin-bottom: 3rem;
-}
-
-.featured-categories .section-title h2 {
-    color: var(--dark);
-    font-weight: 700;
-    font-size: 2.5rem;
-    margin-bottom: 1rem;
-    position: relative;
-}
-
-.featured-categories .section-title h2::after {
-    content: '';
-    position: absolute;
-    bottom: -10px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 60px;
-    height: 4px;
-    background: linear-gradient(90deg, var(--primary), var(--primary-light));
-    border-radius: 2px;
-}
-
-.featured-categories .section-title p {
-    font-size: 1.1rem;
-    color: var(--gray);
-    max-width: 600px;
-    margin: 0 auto;
-}
-
-/* Grid de categorías */
-.category-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 2rem;
-    margin-top: 2rem;
-}
-
-/* Tarjetas de categoría */
-.category-card {
+/* ===== ESTILOS PARA BARRA LATERAL DE CATEGORÍAS ===== */
+.categories-sidebar {
     background: white;
-    border-radius: 16px;
+    border-radius: 12px;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
     overflow: hidden;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-    position: relative;
+    margin-bottom: 2rem;
     border: 1px solid rgba(0, 0, 0, 0.05);
 }
 
-.category-card:hover {
-    transform: translateY(-8px);
-    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+.categories-sidebar-header {
+    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+    padding: 1rem 1.25rem;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
 }
 
-/* Imagen de categoría */
-.category-image {
+.categories-title {
+    color: white;
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin: 0;
+    display: flex;
+    align-items: center;
+}
+
+.categories-title i {
+    font-size: 1.2rem;
+}
+
+.categories-list {
+    padding: 0;
+}
+
+/* Items de categoría */
+.category-item {
+    display: flex;
+    align-items: center;
+    padding: 0.875rem 1.25rem;
+    text-decoration: none;
+    color: var(--dark);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease;
     position: relative;
-    height: 200px;
-    overflow: hidden;
-    background: linear-gradient(135deg, #f8f9fa, #e9ecef);
 }
 
-.category-image img {
+.category-item:hover {
+    background: rgba(227, 6, 19, 0.05);
+    color: var(--primary);
+    text-decoration: none;
+    transform: translateX(5px);
+}
+
+.category-item:last-child {
+    border-bottom: none;
+}
+
+/* Miniatura de categoría */
+.category-thumbnail {
+    width: 40px;
+    height: 40px;
+    border-radius: 8px;
+    overflow: hidden;
+    margin-right: 0.875rem;
+    flex-shrink: 0;
+    background: #f8f9fa;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.category-thumbnail img {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    transition: transform 0.4s ease;
-}
-
-.category-card:hover .category-image img {
-    transform: scale(1.1);
-}
-
-/* Overlay con icono */
-.category-overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: linear-gradient(135deg, rgba(227, 6, 19, 0.8), rgba(227, 6, 19, 0.6));
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    opacity: 0;
-    transition: all 0.3s ease;
-}
-
-.category-card:hover .category-overlay {
-    opacity: 1;
-}
-
-.category-icon {
-    font-size: 3rem;
-    color: white;
-    transform: scale(0.8);
     transition: transform 0.3s ease;
 }
 
-.category-card:hover .category-icon {
-    transform: scale(1);
+.category-item:hover .category-thumbnail img {
+    transform: scale(1.1);
 }
 
-/* Contenido de categoría */
-.category-content {
-    padding: 1.5rem;
-    text-align: center;
+/* Información de categoría */
+.category-info {
+    flex: 1;
+    min-width: 0;
 }
 
-.category-title {
-    font-size: 1.25rem;
-    font-weight: 600;
-    color: var(--dark);
-    margin-bottom: 0.5rem;
-    line-height: 1.3;
-}
-
-.category-description {
-    color: var(--gray);
+.category-name {
+    display: block;
+    font-weight: 500;
     font-size: 0.95rem;
-    margin-bottom: 0.75rem;
-    line-height: 1.4;
+    line-height: 1.3;
+    margin-bottom: 0.125rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .category-count {
-    display: inline-block;
-    background: rgba(227, 6, 19, 0.1);
-    color: var(--primary);
-    padding: 0.25rem 0.75rem;
-    border-radius: 20px;
-    font-size: 0.85rem;
-    font-weight: 500;
-    margin-bottom: 1rem;
+    display: block;
+    font-size: 0.8rem;
+    color: var(--gray);
+    font-weight: 400;
 }
 
-/* Botón de categoría */
-.category-content .btn {
-    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-    border: none;
-    color: white;
-    padding: 0.5rem 1.5rem;
-    border-radius: 25px;
-    font-weight: 600;
-    font-size: 0.9rem;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
+.category-item:hover .category-count {
+    color: rgba(227, 6, 19, 0.7);
+}
+
+/* Flecha de categoría */
+.category-arrow {
+    font-size: 0.8rem;
+    color: var(--gray);
+    margin-left: 0.5rem;
     transition: all 0.3s ease;
-    box-shadow: 0 4px 15px rgba(227, 6, 19, 0.3);
+    opacity: 0.6;
 }
 
-.category-content .btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(227, 6, 19, 0.4);
-    background: linear-gradient(135deg, var(--primary-dark), var(--primary));
+.category-item:hover .category-arrow {
+    color: var(--primary);
+    transform: translateX(3px);
+    opacity: 1;
 }
 
-/* Efecto hover-lift */
-.hover-lift {
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+/* ===== ESTILOS RESPONSIVE PARA CATEGORÍAS ===== */
+
+/* Botón toggle para móviles */
+.categories-toggle {
+    display: none;
+    background: var(--primary);
+    color: white;
+    border: none;
+    padding: 0.75rem 1rem;
+    border-radius: 8px;
+    font-weight: 500;
+    font-size: 0.9rem;
+    margin-bottom: 1rem;
+    width: 100%;
+    text-align: left;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 8px rgba(227, 6, 19, 0.2);
 }
 
-.hover-lift:hover {
-    transform: translateY(-5px);
+.categories-toggle:hover {
+    background: var(--primary-dark);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(227, 6, 19, 0.3);
+}
+
+.categories-toggle i {
+    margin-right: 0.5rem;
+    transition: transform 0.3s ease;
+}
+
+.categories-toggle.active i {
+    transform: rotate(180deg);
 }
 
 /* Responsive para categorías */
 @media (max-width: 768px) {
+    /* Mostrar botón toggle en móviles */
+    .categories-toggle {
+        display: block;
+    }
+    
+    /* Ocultar sidebar por defecto en móviles */
+    .categories-sidebar {
+        display: none;
+        margin-bottom: 1rem;
+    }
+    
+    /* Mostrar sidebar cuando esté activo */
+    .categories-sidebar.show {
+        display: block;
+        animation: slideDown 0.3s ease;
+    }
+    
+    /* Ajustar padding en móviles */
+    .category-item {
+        padding: 1rem 1.25rem;
+    }
+    
+    .category-thumbnail {
+        width: 35px;
+        height: 35px;
+        margin-right: 0.75rem;
+    }
+    
+    .category-name {
+        font-size: 0.9rem;
+    }
+    
+    .category-count {
+        font-size: 0.75rem;
+    }
+    
     .category-grid {
         grid-template-columns: 1fr;
         gap: 1.5rem;
@@ -885,6 +905,42 @@ a:hover {
     
     .category-content {
         padding: 1.25rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .categories-sidebar-header {
+        padding: 0.875rem 1rem;
+    }
+    
+    .categories-title {
+        font-size: 1rem;
+    }
+    
+    .category-item {
+        padding: 0.875rem 1rem;
+    }
+    
+    .category-thumbnail {
+        width: 32px;
+        height: 32px;
+        margin-right: 0.625rem;
+    }
+    
+    .category-name {
+        font-size: 0.85rem;
+    }
+}
+
+/* Animación para el despliegue */
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
     }
 }
 

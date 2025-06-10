@@ -22,6 +22,7 @@
             'theme_pelotazo/static/src/scss/theme.scss',
             # JavaScript del tema
             'theme_pelotazo/static/src/js/theme.js',
+            'theme_pelotazo/static/src/js/categories.js',
         ],
         'web.assets_frontend_lazy': [
             # Archivos que se cargarán de forma perezosa
